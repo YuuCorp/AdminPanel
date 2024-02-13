@@ -15,8 +15,17 @@ export default defineNuxtConfig({
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxtjs/google-fonts",
-    "nuxt-lucide-icons"
+    "nuxt-lucide-icons",
+    "@nuxtjs/apollo",
   ],
+
+  apollo: {
+    clients: {
+      default: {
+        httpEndpoint: "https://api.github.com/graphql",
+      }
+    }
+  },
 
   googleFonts: {
     families: {
