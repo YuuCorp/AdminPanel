@@ -6,5 +6,11 @@ export default defineNuxtConfig({
     shim: false
   },
 
-  modules: ["@nuxtjs/tailwindcss"]
+  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/google-fonts"],
+
+  googleFonts: {
+    families: {
+      "JetBrains Mono": [400, 500, 700]
+    }
+  }
 })

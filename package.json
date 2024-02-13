@@ -15,6 +15,7 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@nuxtjs/google-fonts": "latest",
     "@nuxtjs/tailwindcss": "latest"
   }
 }

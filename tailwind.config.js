@@ -1,6 +1,5 @@
-import type { Config } from 'tailwindcss'
-
-export default {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
     "./components/**/*.{js,vue,ts}",
     "./layouts/**/*.vue",
@@ -23,7 +22,10 @@ export default {
         },
         accent: "#28262B",
       },
+      fontFamily: {
+        jetbrains: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace" ],
+      },
     }
   },
   plugins: [],
-} satisfies Config
+}
