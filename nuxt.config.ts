@@ -6,7 +6,17 @@ export default defineNuxtConfig({
     shim: false
   },
 
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/google-fonts"],
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag.startsWith("csm-")
+    },
+  },
+
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/google-fonts",
+    "nuxt-lucide-icons"
+  ],
 
   googleFonts: {
     families: {
