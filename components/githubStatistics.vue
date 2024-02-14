@@ -3,9 +3,9 @@
     <div class="flex w-full justify-between items-center">
       <h1 class="text-lg font-bold">GitHub Statistics</h1>
       <div class="flex gap-1 items-center">
-        <LucideChevronLeft class="text-primary inline-block"/>
+        <Icon name="material-symbols:chevron-left" class="text-primary inline-block"/>
         <p class="text-sm select-none">1 / 2</p>
-        <LucideChevronRight class="text-primary inline-block"/>
+        <Icon name="material-symbols:chevron-right" class="text-primary inline-block"/>
       </div>
     </div>
     <csm-divider class="h-[2px] w-full bg-accent rounded-full"></csm-divider>
@@ -23,15 +23,15 @@
 
     <div class="flex flex-col gap-1">
       <div class="flex items-center gap-2">
-        <LucideGitCommitHorizontal class="text-primary"/>
+        <Icon name="tdesign:git-commit" class="text-primary w-5" />
         <p><span class="font-bold">{{ githubStats.commits }}</span> commits</p>
       </div>
       <div class="flex items-center gap-2">
-        <LucideStar class="text-primary fill-primary w-5"/>
+        <Icon name="material-symbols:star" class="text-primary fill-primary w-5"/>
         <p><span class="font-bold">{{ githubStats.stars }}</span> stars</p>
       </div>
       <div class="flex items-center gap-2">
-        <LucideCircleDot class="text-primary w-5"/>
+        <Icon name="tabler:circle-dot" class="text-primary w-5"/>
         <p><span class="font-bold">{{ githubStats.issues }}</span> open issues</p>
       </div>
     </div>

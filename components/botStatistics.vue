@@ -5,17 +5,17 @@
 
     <div class="flex flex-col gap-1">
       <div class="flex items-center gap-1">
-        <LucideUser class="text-primary inline-block"/>
+        <Icon name="mdi:user" class="text-primary inline-block"/>
         <p><span class="font-bold">48</span> registered users</p>
       </div>
 
       <div class="flex items-center gap-1">
-        <LucideUsers class="text-primary inline-block"/>
+        <Icon name="mdi:users" class="text-primary inline-block"/>
         <p><span class="font-bold">21.4K</span> members</p>
       </div>
 
       <div class="flex items-center gap-1">
-        <LucideBuilding class="text-primary inline-block"/>
+        <Icon name="tabler:building" class="text-primary inline-block"/>
         <p><span class="font-bold">114</span> servers</p>
       </div>
     </div>

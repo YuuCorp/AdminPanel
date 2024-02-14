@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxtjs/google-fonts",
-    "nuxt-lucide-icons",
+    "nuxt-icon-tw",
   ],
 
   googleFonts: {
