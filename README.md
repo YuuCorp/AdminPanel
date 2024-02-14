@@ -4,8 +4,8 @@ This is an internal admin panel made for our discord bot, Yuuko. This is so we c
 
 ## TODO
 
-- [ ] Fetch data from GitHub for GitHub statistics component
 - [ ] Add & style buttons
-- [ ] Conjure up the method to communicate with the bot (e.g getting the data, sending signals)
 - [ ] Add authentication with Discord log-in
+- [ ] Conjure up the method to communicate with the bot (e.g getting the data, sending signals)
 - [ ] Add mobile support
+- [x] Fetch data from GitHub for GitHub statistics component

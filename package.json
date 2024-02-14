@@ -17,6 +17,7 @@
   "devDependencies": {
     "@nuxtjs/google-fonts": "latest",
     "@nuxtjs/tailwindcss": "latest",
+    "nuxt-graphql-client": "latest",
     "nuxt-icon-tw": "^0.1.3"
   }
 }

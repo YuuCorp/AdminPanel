@@ -1,5 +1,5 @@
 <template>
-  <div class="w-80 p-4 h-fit bg-background-100 rounded-lg border border-accent flex flex-col gap-3">
+  <div v-if="githubStats" class="w-80 p-4 h-fit bg-background-100 rounded-lg border border-accent flex flex-col gap-3">
     <div class="flex w-full justify-between items-center">
       <h1 class="text-lg font-bold">GitHub Statistics</h1>
       <div class="flex gap-1 items-center">
@@ -40,17 +40,24 @@
 </template>
 
 <script lang="ts" setup>
+const { repository } = await GqlStats({ owner: "YuuCorp", "name": "Yuuko", "first": 1})
+const githubStats = makeStats(repository);
 
-const githubStats = {
-  commits: 289,
-  stars: 12,
-  issues: 0,
-  lastCommit: "Commit text goes here",
-  lastUpdated: 1707675633,
+function makeStats(repo: typeof repository) {
+  const commit = repo?.defaultBranchRef?.target;
+  if(!repo || !commit || !("message" in commit)) return;
+
+  return {
+    commits: commit.history.totalCount,
+    stars: repo.stargazerCount,
+    issues: repo.issues.totalCount,
+    lastCommit: commit.message,
+    lastUpdated: new Date(commit.committedDate),
+  }
 }
 
-function timeAgo(timestamp: number): string {
-    const seconds: number = Math.floor((new Date().getTime() - new Date(timestamp * 1000).getTime()) / 1000);
+function timeAgo(time: Date): string {
+    const seconds = Math.floor((new Date().getTime() - time.getTime()) / 1000);
 
     const intervals = {
         year: 31536000,
