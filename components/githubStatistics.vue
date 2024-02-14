@@ -1,11 +1,11 @@
 <template>
-  <div v-if="githubStats" class="w-80 p-4 h-fit bg-background-100 rounded-lg border border-accent flex flex-col gap-3">
+  <div v-if="props.stats" class="w-80 p-4 h-fit bg-background-100 rounded-lg border border-accent flex flex-col gap-3">
     <div class="flex w-full justify-between items-center">
       <h1 class="text-lg font-bold">GitHub Statistics</h1>
       <div class="flex gap-1 items-center">
-        <Icon name="material-symbols:chevron-left" class="text-primary inline-block"/>
-        <p class="text-sm select-none">1 / 2</p>
-        <Icon name="material-symbols:chevron-right" class="text-primary inline-block"/>
+        <Icon @click="$emit('pageChange', 'back')" name="material-symbols:chevron-left" class="text-primary inline-block cursor-pointer"/>
+        <p class="text-sm select-none">{{ props.currentPage }} / 2</p>
+        <Icon @click="$emit('pageChange', 'forward')" name="material-symbols:chevron-right" class="text-primary inline-block cursor-pointer"/>
       </div>
     </div>
     <csm-divider class="h-[2px] w-full bg-accent rounded-full"></csm-divider>
@@ -13,26 +13,26 @@
     <div class="flex justify-between gap-2">
       <div class="w-36">
         <h4 class="font-bold">Last commit</h4>
-        <p class="text-text-200 text-sm truncate">{{ githubStats.lastCommit }}</p>
+        <p class="text-text-200 text-sm truncate">{{ props.stats.lastCommit }}</p>
       </div>
       <div>
         <h4 class="font-bold">Last updated</h4>
-        <p class="text-text-200 text-sm text-right">{{ timeAgo(githubStats.lastUpdated) }}</p>
+        <p class="text-text-200 text-sm text-right">{{ timeAgo(props.stats.lastUpdated) }}</p>
       </div>
     </div>
 
     <div class="flex flex-col gap-1">
       <div class="flex items-center gap-2">
         <Icon name="tdesign:git-commit" class="text-primary w-5" />
-        <p><span class="font-bold">{{ githubStats.commits }}</span> commits</p>
+        <p><span class="font-bold">{{ props.stats.commits }}</span> commits</p>
       </div>
       <div class="flex items-center gap-2">
         <Icon name="material-symbols:star" class="text-primary fill-primary w-5"/>
-        <p><span class="font-bold">{{ githubStats.stars }}</span> stars</p>
+        <p><span class="font-bold">{{ props.stats.stars }}</span> stars</p>
       </div>
       <div class="flex items-center gap-2">
         <Icon name="tabler:circle-dot" class="text-primary w-5"/>
-        <p><span class="font-bold">{{ githubStats.issues }}</span> open issues</p>
+        <p><span class="font-bold">{{ props.stats.issues }}</span> open issues</p>
       </div>
     </div>
 
@@ -40,21 +40,10 @@
 </template>
 
 <script lang="ts" setup>
-const { repository } = await GqlStats({ owner: "YuuCorp", "name": "Yuuko", "first": 1})
-const githubStats = makeStats(repository);
-
-function makeStats(repo: typeof repository) {
-  const commit = repo?.defaultBranchRef?.target;
-  if(!repo || !commit || !("message" in commit)) return;
-
-  return {
-    commits: commit.history.totalCount,
-    stars: repo.stargazerCount,
-    issues: repo.issues.totalCount,
-    lastCommit: commit.message,
-    lastUpdated: new Date(commit.committedDate),
-  }
-}
+const props = defineProps<{
+  currentPage: number;
+  stats?: githubStats;
+}>()
 
 function timeAgo(time: Date): string {
     const seconds = Math.floor((new Date().getTime() - time.getTime()) / 1000);
