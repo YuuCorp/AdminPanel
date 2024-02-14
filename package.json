@@ -17,7 +17,6 @@
   "devDependencies": {
     "@nuxtjs/google-fonts": "latest",
     "@nuxtjs/tailwindcss": "latest",
-    "nuxt-lucide-icons": "latest",
-    "@nuxtjs/apollo": "next"
+    "nuxt-lucide-icons": "latest"
   }
 }

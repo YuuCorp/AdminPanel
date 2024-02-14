@@ -23,10 +23,11 @@
 </template>
 
 <script lang="ts" setup>
-import botLogs from 'public/logs.json'
-const typedLogs = botLogs as { date: string, user: string, info: string }[]
+import typedLogs from '../data/logs.json'
+// btw you don't need to type it, it already has a type
 
-const totalCommands = typedLogs.length;
+
+const totalCommands = typedLogs.length; 
 const commandUsage = calculateUsageByField(typedLogs, 'info');
 const usageByUser = calculateUsageByField(typedLogs, 'user');
 
@@ -35,7 +36,7 @@ function calculateUsageByField(logs: typeof typedLogs, field: keyof typeof typed
     const value = log[field];
     const index = acc.findIndex((c) => c.name === value);
     if (index === -1) {
-      acc.push({ name: value, count: 1 });
+      acc.push({ name: value, count:  1 });
     } else {
       acc[index].count++;
     }

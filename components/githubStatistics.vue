@@ -49,16 +49,6 @@ const githubStats = {
   lastUpdated: 1707675633,
 }
 
-
-/*
-const query = gql`
-  query 
-`;
-const variables = {};
-
-const { data } = await useAsyncQuery(query, variables);
-*/
-
 function timeAgo(timestamp: number): string {
     const seconds: number = Math.floor((new Date().getTime() - new Date(timestamp * 1000).getTime()) / 1000);
 

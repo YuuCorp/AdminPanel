@@ -13,6 +13,6 @@
 </template>
 
 <script lang="ts" setup>
-import botLogs from 'public/logs.json'
+import botLogs from '../data/logs.json'
 const typedLogs = botLogs as { date: string, user: string, info: string }[]
 </script>
