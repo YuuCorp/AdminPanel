@@ -7,7 +7,7 @@
       <h2 class="text-lg font-medium">Top 3 most used commands</h2>
       <div class="w-full flex justify-between" v-for="command in commandUsage.slice(0, 3)">
         <p>{{ command.name }}</p>
-        <span class="font-medium">{{ command.count }} / {{ totalCommands }}</span>
+        <span class="font-medium select-none">{{ command.count }} / {{ totalCommands }}</span>
       </div>
     </div>
 
@@ -15,7 +15,7 @@
         <h2 class="text-lg font-medium">Top 3 users</h2>
         <div class="w-full flex justify-between" v-for="command in usageByUser.slice(0, 3)">
           <p>{{ command.name }}</p>
-          <span class="font-medium">{{ command.count }} / {{ totalCommands }}</span>
+          <span class="font-medium select-none">{{ command.count }} / {{ totalCommands }}</span>
         </div>
       </div>
 

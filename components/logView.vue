@@ -4,7 +4,7 @@
       <csm-divider class="h-[2px] w-full bg-accent rounded-full"></csm-divider>
       <div class="max-h-[700px] overflow-scroll">
         <div class="w-full normal-case flex gap-2" v-for="(log, idx) in typedLogs">
-          <span class="text-text-200">{{ String(idx).padStart(String(typedLogs.length).length, "0") }}</span>
+          <span class="text-text-200 select-none">{{ String(idx + 1).padStart(String(typedLogs.length).length, "0") }}</span>
           <csm-divider class="min-h-full w-[2px] bg-accent"></csm-divider>
           <p>{{ log.date }}: {{ log.user }} ran {{ log.info }}</p>
         </div>
