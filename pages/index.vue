@@ -18,7 +18,6 @@
       <BotButton @take-action="playToast" button-text="Wipe Logs" icon="mdi:trash-can-outline" />
     </div>
   </div>
-  <Toaster  />
 </template>
 
 <script lang="ts" setup>
