@@ -12,10 +12,10 @@
       </div>
     </csm-bento>
     <div class="flex w-full justify-center gap-2">
-      <BotButton @take-action="playToast" button-text="Update Bot" icon="material-symbols:cloud-download-outline" />
-      <BotButton @take-action="playToast" button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
-      <AnnouncementDialog />
-      <BotButton @take-action="playToast" button-text="Wipe Logs" icon="mdi:trash-can-outline" />
+      <BotButton @take-action="executeToast" button-text="Update Bot" icon="material-symbols:cloud-download-outline" />
+      <BotButton @take-action="executeToast" button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
+      <AnnouncementDialog @submit:announcement='(e) => executeToast("Announcement has been made!", e.text)' />
+      <BotButton @take-action="executeToast" button-text="Wipe Logs" icon="mdi:trash-can-outline" />
     </div>
   </div>
 </template>
@@ -47,9 +47,9 @@ function makeStats(repo: typeof repository) {
   }
 }
 
-function playToast(event: string) {
-  return toast('Event triggered', {
-    description: `The event, ${event}, was triggered.`,
+function executeToast(title: string, description?: string) {
+  return toast(title, {
+    description,
   });
 }
 

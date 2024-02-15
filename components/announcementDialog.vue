@@ -8,12 +8,12 @@
           <DialogTitle>Make an announcement!</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-end space-x-2 gap-2">
-            <Textarea @update:model-value="updateAnnouncement" placeholder="Our bot has been experiencing an unexpected hurdle..." />
+            <Textarea v-model:model-value="announcementData" placeholder="Our bot has been experiencing an unexpected hurdle..." />
             <p class="text-muted-foreground text-sm select-none">{{ remainingChars }} chars. remaining</p>
           </div>
         <DialogFooter>
           <DialogClose>
-            <Button type="submit" @click="$emit('submit:announcement', String(announcementData))">Submit</Button>
+            <Button type="submit" @click="submitAnnouncement">Submit</Button>
           </DialogClose>
         </DialogFooter>
     </DialogContent>
@@ -21,14 +21,19 @@
 </template>
 
 <script lang="ts" setup>
-const announcementData = ref<string | number>("");
-const remainingChars = computed(() => 200 - String(announcementData.value).length);
-
 const emits = defineEmits<{
-  (e: 'submit:announcement', payload: string): void
+  (e: 'submit:announcement', payload: {
+    text: string;
+    date: number;
+  }): void
 }>()
 
-function updateAnnouncement(event: string | number) {
-  announcementData.value = event;
+const announcementData = defineModel<string | number>({ default: '' });
+const remainingChars = computed(() => 200 - String(announcementData.value).length);
+
+function submitAnnouncement() {
+  emits('submit:announcement', { text: String(announcementData.value), date: Date.now()});
+  announcementData.value = '';
 }
+
 </script>
