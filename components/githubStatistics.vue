@@ -1,5 +1,5 @@
 <template>
-  <div v-if="props.stats" class="w-80 p-4 h-fit bg-background-100 rounded-lg border border-accent flex flex-col gap-3">
+  <div v-if="props.stats" class="w-80 p-4 h-56 bg-background-100 rounded-lg border border-accent flex flex-col gap-3">
     <div class="flex w-full justify-between items-center">
       <h1 class="text-lg font-bold">GitHub Statistics</h1>
       <div class="flex gap-1 items-center">

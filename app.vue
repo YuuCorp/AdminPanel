@@ -44,6 +44,6 @@ function getEvent(event: string) {
 
 function changePage(direction: string) {
   const dirValue = direction === "forward" ? 1 : -1;
-  bentoPage.value = Math.max(1, Math.min(2, bentoPage.value + dirValue));
+  bentoPage.value = limitRange(1, 2, bentoPage.value + dirValue);
 }
 </script>
