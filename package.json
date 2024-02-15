@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.0.1",
+    "@vueuse/core": "^10.7.2",
     "arctic": "^1.1.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

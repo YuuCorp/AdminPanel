@@ -14,7 +14,7 @@
     <div class="flex w-full justify-center gap-2">
       <BotButton @take-action="playToast" button-text="Update Bot" icon="material-symbols:cloud-download-outline" />
       <BotButton @take-action="playToast" button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
-      <BotButton @take-action="playToast" button-text="Announcement" icon="mdi:megaphone-outline" />
+      <AnnouncementDialog />
       <BotButton @take-action="playToast" button-text="Wipe Logs" icon="mdi:trash-can-outline" />
     </div>
   </div>
