@@ -69,10 +69,31 @@
 }
  
 @layer base {
+  html {
+    @apply font-jetbrains;
+  }
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  *::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  *::-webkit-scrollbar-track {
+    @apply bg-muted-foreground/5;
+  }
+  
+  
+  *::-webkit-scrollbar-thumb {
+    @apply bg-yu-primary;
+  }
+  
+  :root{
+    scrollbar-color: rgb(255 77 109 / 1) hsl(var(--muted) / 0.05) !important;
+    scrollbar-width: thin !important;
   }
 }

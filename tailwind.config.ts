@@ -1,7 +1,7 @@
-const animate = require("tailwindcss-animate")
+import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate"
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+export default <Partial<Config>> {
   darkMode: ["class"],
   safelist: ["dark"],
   
@@ -15,7 +15,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        background: {
+        "yu-background": {
           100: "#18181A",
           200: "#161618",
         },
@@ -24,7 +24,7 @@ module.exports = {
           100: "#ACACAE",
           200: "#8A8A8A",
         },
-        accent: "#28262B",
+        "yu-accent": "#28262B",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -64,24 +64,6 @@ module.exports = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-      },
-      keyframes: {
-        "accordion-down": {
-          from: { height: 0 },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 },
-        },
-        "collapsible-down": {
-          from: { height: 0 },
-          to: { height: 'var(--radix-collapsible-content-height)' },
-        },
-        "collapsible-up": {
-          from: { height: 'var(--radix-collapsible-content-height)' },
-          to: { height: 0 },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

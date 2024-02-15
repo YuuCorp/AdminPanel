@@ -1,5 +1,6 @@
 <template>
-  <NuxtPage />
+  <NuxtPage class="font-jetbrains" />
+  <!--i wonder if that's a warcrime, most certainly somewhere -->
   <Sonner theme="dark" rich-colors :duration=2500 />
 </template>
 

@@ -12,7 +12,8 @@
             <p class="text-muted-foreground text-sm select-none">{{ remainingChars }} chars. remaining</p>
           </div>
         <DialogFooter>
-          <DialogClose>
+          <Button v-if="!String(announcementData).length" disabled>Submit</Button>
+          <DialogClose v-else>
             <Button type="submit" @click="submitAnnouncement">Submit</Button>
           </DialogClose>
         </DialogFooter>

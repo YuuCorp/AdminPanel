@@ -70,7 +70,7 @@ export default defineNuxtConfig({
   },
   googleFonts: {
     families: {
-      "JetBrains Mono": [400, 500, 700]
+      "JetBrains Mono": true
     }
   }
 })
