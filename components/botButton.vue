@@ -11,6 +11,10 @@ const props = defineProps<{
   icon: string;
 }>();
 
+const emits = defineEmits<{
+  (e: 'takeAction', payload: string): void
+}>()
+
 function normalize(text: string) {
   return text.toUpperCase().replaceAll(" ", '_');
 }

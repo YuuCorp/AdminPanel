@@ -28,6 +28,10 @@ const props = defineProps<{
   currentPage: number;
 }>()
 
+const emits = defineEmits<{
+  (e: 'pageChange', payload: 'back' | 'forward'): void
+}>()
+
 const announcementsIdx = ref(0);
 const currentAnnouncement = computed(() => announcements[announcementsIdx.value]);
 

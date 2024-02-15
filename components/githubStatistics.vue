@@ -49,6 +49,10 @@ const props = defineProps<{
   stats?: githubStats;
 }>()
 
+const emits = defineEmits<{
+  (e: 'pageChange', payload: 'back' | 'forward'): void
+}>()
+
 function timeAgo(time: Date): string {
     const seconds = Math.floor((new Date().getTime() - time.getTime()) / 1000);
 
