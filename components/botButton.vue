@@ -12,6 +12,6 @@ const props = defineProps<{
 }>();
 
 function normalize(text: string) {
-  return text.toLowerCase().replaceAll(" ", '_');
+  return text.toUpperCase().replaceAll(" ", '_');
 }
 </script>

@@ -36,6 +36,7 @@ export default eventHandler(async (event) => {
 		await db.insert(userTable).values({
 			id: userId,
 			discordId: discordRes.id,
+			discordAvatar: discordRes.avatar,
 			username: discordRes.username
 		})
 

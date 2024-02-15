@@ -6,6 +6,7 @@ const { discord: discordCfg } = useRuntimeConfig()
 interface DatabaseUserAttributes {
 	username: string;
 	discordId: string;
+	discordAvatar: string;
 }
 
 export const lucia = new Lucia(luciaDbAdapter, {
@@ -14,7 +15,8 @@ export const lucia = new Lucia(luciaDbAdapter, {
 	},
 	getUserAttributes: (attr) => ({
 		username: attr.username,
-		discordId: attr.discordId
+		discordId: attr.discordId,
+		discordAvatar: attr.discordAvatar
 	})
 });
 
