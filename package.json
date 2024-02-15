@@ -7,13 +7,23 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:push": "drizzle-kit push:pg",
+    "db:introspect": "drizzle-kit introspect:pg",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@lucia-auth/adapter-drizzle": "^1.0.1",
+    "arctic": "^1.1.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "drizzle-orm": "^0.29.3",
+    "lucia": "^3.0.1",
     "lucide-vue-next": "^0.330.0",
     "nuxt": "^3.10.1",
+    "oslo": "^1.1.1",
+    "pg": "^8.11.3",
     "radix-vue": "^1.4.4",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
@@ -23,6 +33,8 @@
   "devDependencies": {
     "@nuxtjs/google-fonts": "latest",
     "@nuxtjs/tailwindcss": "^6.11.4",
+    "@types/pg": "^8.11.0",
+    "drizzle-kit": "^0.20.14",
     "nuxt-graphql-client": "latest",
     "nuxt-icon-tw": "^0.1.3",
     "shadcn-nuxt": "^0.9.0",
