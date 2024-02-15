@@ -4,11 +4,11 @@
       <h1 class="text-lg font-bold">GitHub Statistics</h1>
       <div class="flex gap-1 items-center">
         <Button>
-          <Icon @click="$emit('pageChange', 'back')" name="material-symbols:chevron-left" class="text-primary inline-block cursor-pointer"/>
+          <Icon @click="$emit('pageChange', 'back')" name="material-symbols:chevron-left" class="text-yu-primary inline-block cursor-pointer"/>
         </Button>
         <p class="text-sm select-none">{{ props.currentPage }} / 2</p>
         <Button>
-          <Icon @click="$emit('pageChange', 'forward')" name="material-symbols:chevron-right" class="text-primary inline-block cursor-pointer"/>
+          <Icon @click="$emit('pageChange', 'forward')" name="material-symbols:chevron-right" class="text-yu-primary inline-block cursor-pointer"/>
         </Button>
       </div>
     </div>
@@ -27,15 +27,15 @@
 
     <div class="flex flex-col gap-1">
       <div class="flex items-center gap-2">
-        <Icon name="tdesign:git-commit" class="text-primary w-5" />
+        <Icon name="tdesign:git-commit" class="text-yu-primary w-5" />
         <p><span class="font-bold">{{ props.stats.commits }}</span> commits</p>
       </div>
       <div class="flex items-center gap-2">
-        <Icon name="material-symbols:star" class="text-primary fill-primary w-5"/>
+        <Icon name="material-symbols:star" class="text-yu-primary fill-yu-primary w-5"/>
         <p><span class="font-bold">{{ props.stats.stars }}</span> stars</p>
       </div>
       <div class="flex items-center gap-2">
-        <Icon name="tabler:circle-dot" class="text-primary w-5"/>
+        <Icon name="tabler:circle-dot" class="text-yu-primary w-5"/>
         <p><span class="font-bold">{{ props.stats.issues }}</span> open issues</p>
       </div>
     </div>

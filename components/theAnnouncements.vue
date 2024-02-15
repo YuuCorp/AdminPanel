@@ -4,11 +4,11 @@
       <h1 class="text-lg font-bold">Announcements</h1>
       <div class="flex gap-1 items-center">
         <Button>
-          <Icon @click="$emit('pageChange', 'back')" name="material-symbols:chevron-left" class="text-primary inline-block cursor-pointer"/>
+          <Icon @click="$emit('pageChange', 'back')" name="material-symbols:chevron-left" class="text-yu-primary inline-block cursor-pointer"/>
         </Button>
         <p class="text-sm select-none">{{ props.currentPage }} / 2</p>
         <Button>
-          <Icon @click="$emit('pageChange', 'forward')" name="material-symbols:chevron-right" class="text-primary inline-block cursor-pointer"/>
+          <Icon @click="$emit('pageChange', 'forward')" name="material-symbols:chevron-right" class="text-yu-primary inline-block cursor-pointer"/>
         </Button>
       </div>
     </div>

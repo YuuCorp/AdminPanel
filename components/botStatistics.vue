@@ -5,17 +5,17 @@
 
     <div class="flex flex-col gap-1">
       <div class="flex items-center gap-1">
-        <Icon name="mdi:user" class="text-primary inline-block"/>
+        <Icon name="mdi:user" class="text-yu-primary inline-block"/>
         <p><span class="font-bold">48</span> registered users</p>
       </div>
 
       <div class="flex items-center gap-1">
-        <Icon name="mdi:users" class="text-primary inline-block"/>
+        <Icon name="mdi:users" class="text-yu-primary inline-block"/>
         <p><span class="font-bold">21.4K</span> members</p>
       </div>
 
       <div class="flex items-center gap-1">
-        <Icon name="tabler:building" class="text-primary inline-block"/>
+        <Icon name="tabler:building" class="text-yu-primary inline-block"/>
         <p><span class="font-bold">114</span> servers</p>
       </div>
     </div>
