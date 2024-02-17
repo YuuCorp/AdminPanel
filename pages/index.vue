@@ -12,10 +12,10 @@
       </div>
     </csm-bento>
     <div class="flex w-full justify-center gap-2">
-      <BotButton @take-action="executeToast" button-text="Update Bot" icon="material-symbols:cloud-download-outline" />
-      <BotButton @take-action="executeToast" button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
-      <AnnouncementDialog @submit:announcement='(e) => executeToast("Announcement has been made!", e.text)' />
-      <BotButton @take-action="executeToast" button-text="Wipe Logs" icon="mdi:trash-can-outline" />
+      <BotButton @take-action='executeToast("Updating...", "Bot has been successfully updated!")' button-text="Update Bot" icon="material-symbols:cloud-download-outline" />
+      <BotButton @take-action='executeToast("Restarting...", "Bot has been restarted!")' button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
+      <AnnouncementDialog @submit:announcement='executeToast("Uploading announcement...", "Announcement was successful!")' />
+      <BotButton @take-action='executeToast("Wiping logs...", "Successfully wiped all logs!")' button-text="Wipe Logs" icon="mdi:trash-can-outline" />
     </div>
   </div>
 </template>
@@ -47,9 +47,19 @@ function makeStats(repo: typeof repository) {
   }
 }
 
-function executeToast(title: string, description?: string) {
-  return toast(title, {
-    description,
+function executeToast(loading: string, title: string) {
+  const promise = new Promise<string>((resolve, reject) => {
+    setTimeout(() => {
+      resolve(title);
+    }, 2000);
+  });
+
+  return toast.promise(promise, {
+    loading,
+    success: (data) => {
+      return data;
+    },
+    error: (data: any) => 'Error',
   });
 }
 
