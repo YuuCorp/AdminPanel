@@ -13,7 +13,7 @@ export async function useYuukoAPI<T extends API_name>(type: T, api_path?: string
     if (api_path && body) {
       const baseURL = "/api/yuuko/info";
       const url = `${baseURL}/${api_path}`;
-      return $fetch(url, { method: "POST", body }) as API_type<T>;
+      return $fetch<{ message: string }>(url, { method: "POST", body }) as API_type<T>;
     } else {
       const logs = await $fetch("/api/yuuko/info/logs")
       const announcements = await $fetch("/api/yuuko/info/announcements")
@@ -23,6 +23,6 @@ export async function useYuukoAPI<T extends API_name>(type: T, api_path?: string
   } else {
     const baseURL = "/api/yuuko/trigger";
     const url = `${baseURL}/${api_path}`;
-    return $fetch(url, { method: "POST" }) as API_type<T>;
+    return $fetch<{ message: string }>(url, { method: "POST" }) as API_type<T>;
   }
 }

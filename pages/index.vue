@@ -12,7 +12,6 @@
       </div>
     </csm-bento>
     <div class="flex w-full justify-center gap-2">
-      <BotButton @click='executeToast("Updating...", useYuukoAPI("trigger", "update"))' button-text="Update Bot" icon="material-symbols:cloud-download-outline" />
       <BotButton @click='executeToast("Restarting...", useYuukoAPI("trigger", "restart"))' button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
       <AnnouncementDialog @submit:announcement='(e) => executeToast("Uploading announcement...", e)' />
       <BotButton @click='executeToast("Wiping logs...", useYuukoAPI("trigger", "wipelogs"))' button-text="Wipe Logs" icon="mdi:trash-can-outline" />
@@ -53,7 +52,7 @@ function executeToast(loading: string, toastPromise: Promise<any>) {
   return toast.promise(toastPromise, {
     loading,
     success: (data) => {
-      return data;
+      return data.message;
     },
     error: (data: any) => data.message || "An error occurred",
   });
