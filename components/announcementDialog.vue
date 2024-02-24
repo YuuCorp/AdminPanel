@@ -23,17 +23,17 @@
 
 <script lang="ts" setup>
 const emits = defineEmits<{
-  (e: 'submit:announcement', payload: {
+  (e: 'submit:announcement', payload: Promise<{
     text: string;
     date: number;
-  }): void
+  }>): void
 }>()
 
 const announcementData = defineModel<string | number>({ default: '' });
 const remainingChars = computed(() => 200 - String(announcementData.value).length);
 
 function submitAnnouncement() {
-  emits('submit:announcement', { text: String(announcementData.value), date: Date.now()});
+  emits('submit:announcement', Promise.resolve({ text: String(announcementData.value), date: Date.now()}));
   announcementData.value = '';
 }
 

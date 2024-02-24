@@ -36,16 +36,19 @@
 </template>
 
 <script lang="ts" setup>
-import typedLogs from "../data/logs.json"
-const totalCommands = typedLogs.length;
-const commandUsage = calculateUsageByField(typedLogs, "info");
-const usageByUser = calculateUsageByField(typedLogs, "user");
+const props = defineProps<{
+  logs: Log[];
+}>();
+
+const totalCommands = props.logs.length;
+const commandUsage = calculateUsageByField(props.logs, "info");
+const usageByUser = calculateUsageByField(props.logs, "user");
 
 function calculateUsageByField(
-  logs: typeof typedLogs,
+  typedLogs: Log[],
   field: keyof Log
 ) {
-  return logs
+  return typedLogs
     .reduce((acc, log) => {
       const value = log[field];
       const index = acc.findIndex((c) => c.name === value);

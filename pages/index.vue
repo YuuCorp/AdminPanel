@@ -3,19 +3,19 @@
     <img class="rounded-full h-10 border-2 border-accent absolute top-4 right-4" v-bind:src="userAvatar">
 
     <csm-bento class="flex w-full gap-4 justify-center">
-      <LogView />
+      <LogView :logs="APIdata.logs" />
       <div class="flex flex-col min-h-full justify-between">
-        <UsageData />
+        <UsageData :logs="APIdata.logs" />
         <GithubStatistics v-if="bentoPage === 1" @page-change="changePage" :stats="githubStats" :current-page="bentoPage" />
-        <TheAnnouncements v-else @page-change="changePage" :current-page="bentoPage" />
-        <BotStatistics />
+        <TheAnnouncements v-else @page-change="changePage" :announcements="APIdata.announcements" :current-page="bentoPage" />
+        <BotStatistics :stats="APIdata.stats" />
       </div>
     </csm-bento>
     <div class="flex w-full justify-center gap-2">
-      <BotButton @take-action='executeToast("Updating...", "Bot has been successfully updated!")' button-text="Update Bot" icon="material-symbols:cloud-download-outline" />
-      <BotButton @take-action='executeToast("Restarting...", "Bot has been restarted!")' button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
-      <AnnouncementDialog @submit:announcement='executeToast("Uploading announcement...", "Announcement was successful!")' />
-      <BotButton @take-action='executeToast("Wiping logs...", "Successfully wiped all logs!")' button-text="Wipe Logs" icon="mdi:trash-can-outline" />
+      <BotButton @take-action='(e) => executeToast("Updating...", "Bot has been successfully updated!", e)' button-text="Update Bot" icon="material-symbols:cloud-download-outline" />
+      <BotButton @take-action='(e) => executeToast("Restarting...", "Bot has been restarted!", e)' button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
+      <AnnouncementDialog @submit:announcement='(e) => executeToast("Uploading announcement...", "Announcement was successful!", e)' />
+      <BotButton @take-action='(e) => executeToast("Wiping logs...", "Successfully wiped all logs!", e)' button-text="Wipe Logs" icon="mdi:trash-can-outline" />
     </div>
   </div>
 </template>
@@ -30,6 +30,8 @@ import { toast } from 'vue-sonner'
 const user = useAuthenticatedUser()
 const userAvatar = computed(() => `https://cdn.discordapp.com/avatars/${user.value.discordId}/${user.value.discordAvatar}.png`)
 const bentoPage = ref(1);
+
+const APIdata = await useYuukoAPI("info")
 
 const { repository } = await GqlStats({ owner: "YuuCorp", "name": "Yuuko", "first": 1})
 const githubStats = makeStats(repository);
@@ -47,14 +49,9 @@ function makeStats(repo: typeof repository) {
   }
 }
 
-function executeToast(loading: string, title: string) {
-  const promise = new Promise<string>((resolve, reject) => {
-    setTimeout(() => {
-      resolve(title);
-    }, 2000);
-  });
+function executeToast(loading: string, title: string, toastPromise: Promise<any>) {
 
-  return toast.promise(promise, {
+  return toast.promise(toastPromise, {
     loading,
     success: (data) => {
       return data;
