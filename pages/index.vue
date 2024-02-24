@@ -12,10 +12,10 @@
       </div>
     </csm-bento>
     <div class="flex w-full justify-center gap-2">
-      <BotButton @take-action='(e) => executeToast("Updating...", "Bot has been successfully updated!", e)' button-text="Update Bot" icon="material-symbols:cloud-download-outline" />
-      <BotButton @take-action='(e) => executeToast("Restarting...", "Bot has been restarted!", e)' button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
-      <AnnouncementDialog @submit:announcement='(e) => executeToast("Uploading announcement...", "Announcement was successful!", e)' />
-      <BotButton @take-action='(e) => executeToast("Wiping logs...", "Successfully wiped all logs!", e)' button-text="Wipe Logs" icon="mdi:trash-can-outline" />
+      <BotButton @click='executeToast("Updating...", useYuukoAPI("trigger", "update"))' button-text="Update Bot" icon="material-symbols:cloud-download-outline" />
+      <BotButton @click='executeToast("Restarting...", useYuukoAPI("trigger", "restart"))' button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
+      <AnnouncementDialog @submit:announcement='(e) => executeToast("Uploading announcement...", e)' />
+      <BotButton @click='executeToast("Wiping logs...", useYuukoAPI("trigger", "wipelogs"))' button-text="Wipe Logs" icon="mdi:trash-can-outline" />
     </div>
   </div>
 </template>
@@ -31,7 +31,7 @@ const user = useAuthenticatedUser()
 const userAvatar = computed(() => `https://cdn.discordapp.com/avatars/${user.value.discordId}/${user.value.discordAvatar}.png`)
 const bentoPage = ref(1);
 
-const APIdata = await useYuukoAPI("info")
+const APIdata = await useYuukoAPI("info");
 
 const { repository } = await GqlStats({ owner: "YuuCorp", "name": "Yuuko", "first": 1})
 const githubStats = makeStats(repository);
@@ -49,14 +49,13 @@ function makeStats(repo: typeof repository) {
   }
 }
 
-function executeToast(loading: string, title: string, toastPromise: Promise<any>) {
-
+function executeToast(loading: string, toastPromise: Promise<any>) {
   return toast.promise(toastPromise, {
     loading,
     success: (data) => {
       return data;
     },
-    error: (data: any) => 'Error',
+    error: (data: any) => data.message || "An error occurred",
   });
 }
 

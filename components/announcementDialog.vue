@@ -23,17 +23,14 @@
 
 <script lang="ts" setup>
 const emits = defineEmits<{
-  (e: 'submit:announcement', payload: Promise<{
-    text: string;
-    date: number;
-  }>): void
+  (e: 'submit:announcement', payload: Promise<any>): void
 }>()
 
 const announcementData = defineModel<string | number>({ default: '' });
 const remainingChars = computed(() => 200 - String(announcementData.value).length);
 
 function submitAnnouncement() {
-  emits('submit:announcement', Promise.resolve({ text: String(announcementData.value), date: Date.now()}));
+  emits('submit:announcement', useYuukoAPI('info', "announcement", { announcement: String(announcementData.value), date: new Date().toISOString() }));
   announcementData.value = '';
 }
 
