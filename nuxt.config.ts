@@ -29,6 +29,9 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    public: {
+      yuukoApiUrl: process.env.YUUKO_API_URL
+    },
     db: {
       url: process.env.DB_URL
     },

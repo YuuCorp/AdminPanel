@@ -1,5 +1,6 @@
 <template>
-  <div class="bg-background-200 h-screen w-screen p-8 flex flex-col items-center justify-center gap-4 font-jetbrains uppercase text-text-100">
+  <div
+    class="bg-background-200 h-screen w-screen p-8 flex flex-col items-center justify-center gap-4 font-jetbrains uppercase text-text-100">
     <img class="rounded-full h-10 border-2 border-accent absolute top-4 right-4" v-bind:src="userAvatar">
 
     <csm-bento class="flex w-full gap-4 justify-center">
@@ -11,9 +12,11 @@
       </div>
     </csm-bento>
     <div class="flex w-full justify-center gap-2">
-      <BotButton @click='executeToast("Restarting...", useYuukoAPI("trigger", "restart"))' button-text="Restart Bot" icon="material-symbols:refresh-rounded" />
+      <BotButton @click='executeToast("Restarting...", useYuukoAPI("trigger", "restart"))' button-text="Restart Bot"
+        icon="material-symbols:refresh-rounded" />
       <AnnouncementDialog @submit:announcement='(e) => executeToast("Uploading announcement...", e)' />
-      <BotButton @click='executeToast("Wiping logs...", useYuukoAPI("trigger", "wipelogs"))' button-text="Wipe Logs" icon="mdi:trash-can-outline" />
+      <BotButton @click='executeToast("Wiping logs...", useYuukoAPI("trigger", "wipe-logs"))' button-text="Wipe Logs"
+        icon="mdi:trash-can-outline" />
     </div>
   </div>
 </template>
