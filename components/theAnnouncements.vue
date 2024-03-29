@@ -23,7 +23,7 @@ const currentAnnouncement = computed(() => props.announcements[announcementsIdx.
 
 onNuxtReady(() => {
   const interval = setInterval(() => {
-  announcementsIdx.value = limitRange(0, props.announcements.length, announcementsIdx.value + 1);
-}, 3000);
+    announcementsIdx.value = limitRange(0, props.announcements.length - 1, announcementsIdx.value + 1);
+  }, 3000);
 })
 </script>
