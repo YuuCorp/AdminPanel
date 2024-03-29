@@ -1,5 +1,4 @@
 export default defineEventHandler(async (event) => {
-  const baseURL = "http://localhost:3030/api/v1/info";
-  const url = `${baseURL}/announcements`;
+  const url = `${process.env.YUUKO_API_URL}/api/v1/info/announcements`;
   return await $fetch<Announcement[]>(url, { headers: event.headers })
 })

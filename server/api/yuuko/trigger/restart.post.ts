@@ -1,5 +1,4 @@
 export default defineEventHandler(async (event) => {
-  const baseURL = "http://localhost:3030/api/v1/trigger";
-  const url = `${baseURL}/restart`;
+  const url = `${process.env.YUUKO_API_URL}/api/v1/trigger/restart`;
   return $fetch<{ message: string }>(url, { method: "POST", headers: event.headers });
 })

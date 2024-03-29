@@ -2,7 +2,8 @@ const REQUIRED_ENV_VARIABLES = [
   "DB_URL",
   "DISCORD_CLIENT_ID",
   "DISCORD_CLIENT_SECRET",
-  "DISCORD_REDIRECT_URI"
+  "DISCORD_REDIRECT_URI",
+  "YUUKO_API_URL"
 ] as const;
 const missingEnvVariables = REQUIRED_ENV_VARIABLES.filter(
   (env) => !process.env[env]
