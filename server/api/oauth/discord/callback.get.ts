@@ -22,6 +22,7 @@ export default eventHandler(async (event) => {
 		});
 
 		const existingUser = await db.query.user.findFirst({ where: (user, { eq }) => eq(user.discordId, discordRes.id) })
+		console.log("found user");
 		if (existingUser) {
 			if (existingUser.username !== discordRes.username) await db.update(userTable).set({
 				username: discordRes.username

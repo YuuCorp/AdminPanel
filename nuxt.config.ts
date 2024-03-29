@@ -1,6 +1,4 @@
 const REQUIRED_ENV_VARIABLES = [
-  "GQL_HOST",
-  "GQL_TOKEN",
   "DB_URL",
   "DISCORD_CLIENT_ID",
   "DISCORD_CLIENT_SECRET",
@@ -43,7 +41,6 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/google-fonts",
     "nuxt-icon-tw",
-    "nuxt-graphql-client",
     "shadcn-nuxt"
   ],
   shadcn: {
@@ -56,17 +53,6 @@ export default defineNuxtConfig({
      * @default "./components/ui"
      */
     componentDir: './components/ui'
-  },
-  'graphql-client': {
-    clients: {
-      default: {
-        host: "https://api.github.com/graphql",
-        retainToken: true,
-        headers: {
-          "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:122.0) Gecko/20100101 Firefox/122.0",
-        }
-      },
-    }
   },
   googleFonts: {
     families: {

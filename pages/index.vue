@@ -6,8 +6,7 @@
       <LogView :logs="APIdata.logs" />
       <div class="flex flex-col min-h-full justify-between">
         <UsageData :logs="APIdata.logs" />
-        <GithubStatistics v-if="bentoPage === 1" @page-change="changePage" :stats="githubStats" :current-page="bentoPage" />
-        <TheAnnouncements v-else @page-change="changePage" :announcements="APIdata.announcements" :current-page="bentoPage" />
+        <TheAnnouncements :announcements="APIdata.announcements" />
         <BotStatistics :stats="APIdata.stats" />
       </div>
     </csm-bento>
@@ -28,27 +27,10 @@ import { toast } from 'vue-sonner'
 
 const user = useAuthenticatedUser()
 const userAvatar = computed(() => `https://cdn.discordapp.com/avatars/${user.value.discordId}/${user.value.discordAvatar}.png`)
-const bentoPage = ref(1);
 
 const APIdata = await useYuukoAPI("info");
 
-const { repository } = await GqlStats({ owner: "YuuCorp", "name": "Yuuko", "first": 1})
-const githubStats = makeStats(repository);
-
-function makeStats(repo: typeof repository) {
-  const commit = repo?.defaultBranchRef?.target;
-  if(!repo || !commit || !("message" in commit)) return;
-
-  return {
-    commits: commit.history.totalCount,
-    stars: repo.stargazerCount,
-    issues: repo.issues.totalCount,
-    lastCommit: commit.message,
-    lastUpdated: new Date(commit.committedDate),
-  }
-}
-
-function executeToast(loading: string, toastPromise: Promise<any>) {
+function executeToast(loading: string, toastPromise: ReturnType<typeof useYuukoAPI<"trigger">>) {
   return toast.promise(toastPromise, {
     loading,
     success: (data) => {
@@ -56,10 +38,5 @@ function executeToast(loading: string, toastPromise: Promise<any>) {
     },
     error: (data: any) => data.message || "An error occurred",
   });
-}
-
-function changePage(direction: string) {
-  const dirValue = direction === "forward" ? 1 : -1;
-  bentoPage.value = limitRange(1, 2, bentoPage.value + dirValue);
 }
 </script>
