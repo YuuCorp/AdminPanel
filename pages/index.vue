@@ -1,17 +1,17 @@
 <template>
   <div
-    class="bg-background-200 h-screen w-screen p-8 flex flex-col items-center justify-center gap-4 font-jetbrains uppercase text-text-100">
+    class="bg-background-200 h-screen w-screen p-2 md:p-8 flex flex-col items-center gap-4 font-jetbrains uppercase text-text-100">
     <img class="rounded-full h-10 border-2 border-accent absolute top-4 right-4" v-bind:src="userAvatar">
 
-    <csm-bento class="flex w-full gap-4 justify-center">
-      <LogView :logs="APIdata.logs" />
-      <div class="flex flex-col min-h-full justify-between">
+    <csm-bento class="flex w-full flex-wrap md:flex-nowrap gap-4 justify-center m-auto">
+      <LogView class="w-fit" :logs="APIdata.logs" />
+      <div class="flex flex-col justify-between">
         <UsageData :logs="APIdata.logs" />
         <TheAnnouncements :announcements="APIdata.announcements" />
         <BotStatistics :stats="APIdata.stats" />
       </div>
     </csm-bento>
-    <div class="flex w-full justify-center gap-2">
+    <div class="flex flex-wrap w-fit justify-center gap-2 m-auto">
       <BotButton @click='executeToast("Restarting...", useYuukoAPI("trigger", "restart"))' button-text="Restart Bot"
         icon="material-symbols:refresh-rounded" />
       <AnnouncementDialog @submit:announcement='(e) => executeToast("Uploading announcement...", e)' />
