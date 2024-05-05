@@ -35,6 +35,11 @@ export default defineNuxtConfig({
     db: {
       url: process.env.DB_URL
     },
+    anilist: {
+      clientId: process.env.ANILIST_CLIENT_ID,
+      clientSecret: process.env.ANILIST_CLIENT_SECRET,
+      redirectUri: process.env.ANILIST_REDIRECT_URI
+    },
     discord: {
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
@@ -49,14 +54,7 @@ export default defineNuxtConfig({
     "nuxt-typed-router"
   ],
   shadcn: {
-    /**
-     * Prefix for all the imported component
-     */
     prefix: '',
-    /**
-     * Directory that the component lives in.
-     * @default "./components/ui"
-     */
     componentDir: './components/ui'
   },
   googleFonts: {

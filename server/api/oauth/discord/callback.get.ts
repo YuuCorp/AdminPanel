@@ -38,7 +38,10 @@ export default eventHandler(async (event) => {
 			id: userId,
 			discordId: discordRes.id,
 			discordAvatar: discordRes.avatar,
-			username: discordRes.username
+			username: discordRes.username,
+			anilistId: undefined,
+			anilistUsername: undefined,
+			anilistToken: undefined
 		})
 
 		const session = await lucia.createSession(userId, {})

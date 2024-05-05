@@ -1,10 +1,13 @@
-import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, timestamp } from "drizzle-orm/pg-core";
 
 export const userTable = pgTable('user', {
   id: text("id").primaryKey(),
   username: text("username").unique().notNull(),
   discordId: text("discord_id").unique().notNull(),
-  discordAvatar: text("discord_avatar").notNull()
+  discordAvatar: text("discord_avatar").notNull(),
+  anilistToken: text("anilist_token"),
+  anilistUsername: text("anilist_username"),
+  anilistId: integer("anilist_id").unique(),
 })
 
 export const sessionTable = pgTable("session", {

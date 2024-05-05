@@ -8,7 +8,6 @@
     </a>
   </div>
 </template>
-
 <script lang="ts" setup>
 useHead({ htmlAttrs: { class: 'dark' } })
 import type { NuxtError } from '#app'
