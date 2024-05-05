@@ -1,5 +1,5 @@
 <template>
-  <div class="w-80 p-4 h-fit bg-background-100 rounded-lg border border-accent flex flex-col gap-3">
+  <div class="w-80 p-4 h-fit bg-card rounded-lg border border-accent flex flex-col gap-3">
     <h1 class="text-xl font-bold">
       Usage <span class="text-base text-text-200">for {{ currentDate.month }}, {{ currentDate.year }}</span>
     </h1>

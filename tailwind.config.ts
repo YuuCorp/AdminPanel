@@ -1,10 +1,10 @@
 import type { Config } from "tailwindcss";
 import animate from "tailwindcss-animate"
 
-export default <Partial<Config>> {
+export default <Partial<Config>>{
   darkMode: ["class"],
   safelist: ["dark"],
-  
+
   theme: {
     container: {
       center: true,
@@ -60,7 +60,7 @@ export default <Partial<Config>> {
         },
       },
       borderRadius: {
-      	xl: "calc(var(--radius) + 4px)",
+        xl: "calc(var(--radius) + 4px)",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
@@ -73,7 +73,8 @@ export default <Partial<Config>> {
       },
     },
     fontFamily: {
-      jetbrains: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace" ],
+      jetbrains: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
+      inter: ["Inter", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"],
     },
   },
   plugins: [animate],

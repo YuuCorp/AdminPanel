@@ -59,7 +59,8 @@ export default defineNuxtConfig({
   },
   googleFonts: {
     families: {
-      "JetBrains Mono": true
+      "JetBrains Mono": true,
+      "Inter": "400..800",
     }
   }
 })
