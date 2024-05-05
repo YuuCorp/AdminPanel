@@ -44,8 +44,9 @@ export default defineNuxtConfig({
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxtjs/google-fonts",
-    "nuxt-icon-tw",
-    "shadcn-nuxt"
+    "shadcn-nuxt",
+    "nuxt-icon",
+    "nuxt-typed-router"
   ],
   shadcn: {
     /**
