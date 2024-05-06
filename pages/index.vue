@@ -25,7 +25,8 @@
             </div>
             <csm-divider class="h-[2px] w-full bg-input rounded-full"></csm-divider>
             <div class="flex flex-row-reverse">
-                <button class="duration-100 h-10 w-24 bg-primary rounded-md text-sm font-semibold hover:bg-primary/90">
+                <button @click="submitUser"
+                    class="duration-100 h-10 w-24 bg-primary rounded-md text-sm font-semibold hover:bg-primary/90">
                     Submit</button>
             </div>
         </div>
@@ -33,6 +34,7 @@
 </template>
 
 <script lang="ts" setup>
+import { toast } from 'vue-sonner'
 const user = unref(useUser());
 const anilistInfo = computed(() => {
     return {
@@ -58,6 +60,29 @@ async function serviceButton(service: "discord" | "anilist", checkValue: string 
     } else {
         if (type === "logout") await $fetch("/api/oauth/anilist/logout", { method: "POST" });
         else window.location.href = "/api/oauth/anilist";
+    }
+}
+
+function executeToast(loading: string, toastPromise: ReturnType<typeof useYuukoAPI<"trigger">>) {
+    return toast.promise(toastPromise, {
+        loading,
+        success: (data) => {
+            return data.message;
+        },
+        error: (data: any) => data.message || "An error occurred",
+    });
+}
+
+async function submitUser() {
+    try {
+        console.log(user);
+        if (!user?.discordId || !user?.anilistUsername || !user?.anilistToken) return;
+        const config = useRuntimeConfig();
+        const apiURL = config.public.yuukoApiUrl;
+        executeToast("Submitting...", $fetch<{ message: string }>(`${apiURL}/api/v1/public/register`,
+            { headers: { "Authorization": user?.anilistToken }, body: { discordId: user?.discordId }, method: "POST" }))
+    } catch (e) {
+        console.error(e);
     }
 }
 </script>
