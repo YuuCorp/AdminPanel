@@ -78,7 +78,7 @@ async function submitUser() {
         const config = useRuntimeConfig();
         const apiURL = config.public.yuukoApiUrl;
         executeToast("Submitting...", $fetch<{ message: string }>(`${apiURL}/api/v1/public/register`,
-            { headers: { "Authorization": user?.anilistToken }, body: { discordId: user?.discordId }, method: "POST" }))
+            { headers: { "authorization": user?.anilistToken }, body: { discordId: user?.discordId }, method: "POST" }))
     } catch (e) {
         console.error(e);
     }
