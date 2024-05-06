@@ -68,7 +68,10 @@ function executeToast(loading: string, toastPromise: ReturnType<typeof useYuukoA
         success: (data) => {
             return data.message;
         },
-        error: (data: any) => data.message || "An error occurred",
+        error: (data: any) => {
+            console.log(data, data.message);
+            return data?.message || "An error occurred"
+        },
     });
 }
 
