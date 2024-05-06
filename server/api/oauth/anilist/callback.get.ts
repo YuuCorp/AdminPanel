@@ -1,4 +1,5 @@
 import { rsaEncryption } from "~/composables/rsaEncrypt";
+import { generateId } from "lucia";
 import { eq } from "drizzle-orm";
 
 export default eventHandler(async (event) => {
@@ -50,9 +51,24 @@ export default eventHandler(async (event) => {
     const encryptedToken = await rsaEncryption(token.accessToken);
     console.timeEnd("Encrypt Token")
 
-    await db.update(userTable)
-      .set({ anilistId: id, anilistToken: encryptedToken, anilistUsername: name })
-      .where(eq(userTable.id, user.id))
+    const existingUser = event.context.user;
+    if (existingUser) {
+      await db.update(userTable)
+        .set({ anilistId: id, anilistToken: encryptedToken, anilistUsername: name })
+        .where(eq(userTable.id, user.id))
+
+    } else {
+      const userId = generateId(15);
+      await db.insert(userTable).values({
+        id: userId,
+        anilistId: id,
+        anilistToken: encryptedToken,
+        anilistUsername: name
+      })
+
+      const session = await lucia.createSession(userId, {})
+      appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
+    }
 
     return await sendRedirect(event, '/')
   } catch (e) {

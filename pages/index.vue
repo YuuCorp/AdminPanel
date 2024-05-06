@@ -40,6 +40,7 @@ const anilistInfo = computed(() => {
         username: user?.anilistUsername ? user.anilistUsername : "Not logged in"
     }
 })
+
 const discordInfo = computed(() => {
     return {
         buttonText: user?.discordId ? "Log out" : "Log in",
@@ -65,5 +66,4 @@ function serviceButton(service: "discord" | "anilist") {
         logInOrOut(logIn(user?.anilistUsername), "anilist");
     }
 }
-
 </script>

@@ -21,28 +21,27 @@ export default eventHandler(async (event) => {
 			}
 		});
 
-		const existingUser = await db.query.user.findFirst({ where: (user, { eq }) => eq(user.discordId, discordRes.id) })
-		console.log("found user");
+		const existingUser = event.context.user;
 		if (existingUser) {
-			if (existingUser.username !== discordRes.username) await db.update(userTable).set({
-				username: discordRes.username
+			await db.update(userTable).set({
+				discordId: discordRes.id,
+				discordAvatar: discordRes.avatar,
+				username: discordRes.username,
 			})
 
-			const session = await lucia.createSession(existingUser.id, {})
+		} else {
+			const userId = generateId(15);
+			await db.insert(userTable).values({
+				id: userId,
+				discordId: discordRes.id,
+				discordAvatar: discordRes.avatar,
+				username: discordRes.username,
+			})
+
+			const session = await lucia.createSession(userId, {})
 			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
-			return sendRedirect(event, "/")
 		}
 
-		const userId = generateId(15);
-		await db.insert(userTable).values({
-			id: userId,
-			discordId: discordRes.id,
-			discordAvatar: discordRes.avatar,
-			username: discordRes.username,
-		})
-
-		const session = await lucia.createSession(userId, {})
-		appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
 
 		return sendRedirect(event, "/");
 	} catch (e) {
