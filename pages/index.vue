@@ -53,7 +53,6 @@ const discordInfo = computed(() => {
 async function serviceButton(service: "discord" | "anilist", checkValue: string | undefined) {
     const logIn = (v: string | undefined) => v ? "logout" : "login";
     const type = logIn(checkValue);
-    console.log(checkValue);
     if (service === "discord") {
         if (type === "logout") await $fetch("/api/oauth/discord/logout", { method: "POST" });
         else window.location.href = "/api/oauth/discord";
@@ -75,7 +74,6 @@ function executeToast(loading: string, toastPromise: ReturnType<typeof useYuukoA
 
 async function submitUser() {
     try {
-        console.log(user);
         if (!user?.discordId || !user?.anilistUsername || !user?.anilistToken) return;
         const config = useRuntimeConfig();
         const apiURL = config.public.yuukoApiUrl;
