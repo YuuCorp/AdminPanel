@@ -9,14 +9,14 @@
             <csm-divider class="h-[2px] w-full bg-input rounded-full"></csm-divider>
             <div class="flex flex-col gap-2">
                 <div id="discord" class="flex justify-between items-center">
-                    <button @click="serviceButton('discord')"
+                    <button @click="serviceButton('discord', user?.username)"
                         class="duration-100 h-10 w-20 bg-background rounded-md text-sm font-medium border hover:bg-accent">
                         {{ discordInfo.buttonText }}
                     </button>
                     <p class="text-sm font-medium">{{ discordInfo.username }}</p>
                 </div>
                 <div id="anilist" class="flex justify-between items-center">
-                    <button @click="serviceButton('anilist')"
+                    <button @click="serviceButton('anilist', user?.anilistUsername)"
                         class="duration-100 h-10 w-20 bg-background rounded-md text-sm font-medium border hover:bg-accent">
                         {{ anilistInfo.buttonText }}
                     </button>
@@ -48,22 +48,16 @@ const discordInfo = computed(() => {
     }
 })
 
-async function logInOrOut(type: "login" | "logout", serviceType: "anilist" | "discord",) {
-    if (serviceType === "discord") {
+async function serviceButton(service: "discord" | "anilist", checkValue: string | undefined) {
+    const logIn = (v: string | undefined) => v ? "logout" : "login";
+    const type = logIn(checkValue);
+    console.log(checkValue);
+    if (service === "discord") {
         if (type === "logout") await $fetch("/api/oauth/discord/logout", { method: "POST" });
         else window.location.href = "/api/oauth/discord";
     } else {
         if (type === "logout") await $fetch("/api/oauth/anilist/logout", { method: "POST" });
         else window.location.href = "/api/oauth/anilist";
-    }
-}
-
-function serviceButton(service: "discord" | "anilist") {
-    const logIn = (v: string | undefined) => v ? "logout" : "login";
-    if (service === "discord") {
-        logInOrOut(logIn(user?.discordId), "discord");
-    } else {
-        logInOrOut(logIn(user?.anilistUsername), "anilist");
     }
 }
 </script>
