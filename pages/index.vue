@@ -69,7 +69,7 @@ function executeToast(loading: string, toastPromise: ReturnType<typeof useYuukoA
             return data.message;
         },
         error: (data: any) => {
-            return data?.cause || data?.message || "An error occurred"
+            return data?.statusMessage || data?.message || "An error occurred"
         },
     });
 }
