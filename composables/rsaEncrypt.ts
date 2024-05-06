@@ -2,9 +2,11 @@ type RSAkey = CryptoKey & { algorithm: { modulusLength: number } };
 
 export async function rsaEncryption(item: string): Promise<string> {
   const enc = new TextEncoder();
+  const config = useRuntimeConfig();
+  const apiURL = config.public.yuukoApiUrl;
 
   const itemBuffer = enc.encode(item);
-  let publicRSA = await $fetch<string>("https://api.yuuko.dev/api/v1/public/rsa");
+  let publicRSA = await $fetch<string>(`${apiURL}/api/v1/public/rsa`);
   publicRSA = publicRSA.replace('-----BEGIN PUBLIC KEY-----', '').replace('-----END PUBLIC KEY-----', '').replaceAll('\n', '');
   const publicRSAData = str2ab(atob(publicRSA));
   const cryptoKey = await crypto.subtle.importKey('spki', publicRSAData, { name: 'RSA-OAEP', hash: 'SHA-256' }, false, ['encrypt']) as RSAkey;

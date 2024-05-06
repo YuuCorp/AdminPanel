@@ -13,21 +13,29 @@
                         class="duration-100 h-10 w-20 bg-background rounded-md text-sm font-medium border hover:bg-accent">
                         {{ discordInfo.buttonText }}
                     </button>
-                    <p class="text-sm font-medium">{{ discordInfo.username }}</p>
+                    <div class="flex items-center justify-end gap-1">
+                        <p class="text-sm font-medium">{{ discordInfo.username }}</p>
+                        <Icon name="carbon:logo-discord" size="1rem" />
+                    </div>
                 </div>
                 <div id="anilist" class="flex justify-between items-center">
                     <button @click="serviceButton('anilist', user?.anilistUsername)"
                         class="duration-100 h-10 w-20 bg-background rounded-md text-sm font-medium border hover:bg-accent">
                         {{ anilistInfo.buttonText }}
                     </button>
-                    <p class="text-sm font-medium">{{ anilistInfo.username }}</p>
+                    <div class="flex items-center justify-end gap-1">
+                        <p class="text-sm font-medium">{{ anilistInfo.username }}</p>
+                        <Icon name="simple-icons:anilist" size="1rem" />
+                    </div>
                 </div>
             </div>
             <csm-divider class="h-[2px] w-full bg-input rounded-full"></csm-divider>
             <div class="flex flex-row-reverse">
-                <button @click="submitUser"
-                    class="duration-100 h-10 w-24 bg-primary rounded-md text-sm font-semibold hover:bg-primary/90">
-                    Submit</button>
+                <button :disabled="!canSubmit" @click="submitUser"
+                    class="duration-100 h-10 w-24 bg-primary rounded-md disabled:opacity-75 disabled:cursor-not-allowed text-sm font-semibold hover:bg-primary/90">
+                    Connect
+                    <Icon name="tabler:send" size="1rem" />
+                </button>
             </div>
         </div>
     </div>
@@ -35,24 +43,24 @@
 
 <script lang="ts" setup>
 import { toast } from 'vue-sonner'
-const user = unref(useUser());
+const user = useUser();
+
 const anilistInfo = computed(() => {
     return {
-        buttonText: user?.anilistUsername ? "Log out" : "Log in",
-        username: user?.anilistUsername ? user.anilistUsername : "Not logged in"
+        buttonText: user.value?.anilistUsername ? "Log out" : "Log in",
+        username: user.value?.anilistUsername ? user.value.anilistUsername : "Not logged in"
     }
 })
 
 const discordInfo = computed(() => {
     return {
-        buttonText: user?.discordId ? "Log out" : "Log in",
-        username: user?.discordId ? user.username : "Not logged in"
+        buttonText: user.value?.discordId ? "Log out" : "Log in",
+        username: user.value?.discordId ? user.value.username : "Not logged in"
     }
 })
 
 async function serviceButton(service: "discord" | "anilist", checkValue: string | undefined) {
-    const logIn = (v: string | undefined) => v ? "logout" : "login";
-    const type = logIn(checkValue);
+    const type = checkValue ? "logout" : "login";
     if (service === "discord") {
         if (type === "logout") await $fetch("/api/oauth/discord/logout", { method: "POST" });
         else window.location.href = "/api/oauth/discord";
@@ -69,18 +77,22 @@ function executeToast(loading: string, toastPromise: ReturnType<typeof useYuukoA
             return data.message;
         },
         error: (data: any) => {
-            return data?.statusMessage || data?.message || "An error occurred"
+            return data?.data.message || "An error occurred"
         },
     });
 }
 
+const canSubmit = computed(() => {
+    return user.value?.discordId && user.value?.anilistUsername && user.value?.anilistToken
+})
+
 async function submitUser() {
     try {
-        if (!user?.discordId || !user?.anilistUsername || !user?.anilistToken) return;
+        if (!canSubmit.value) return;
         const config = useRuntimeConfig();
         const apiURL = config.public.yuukoApiUrl;
         executeToast("Submitting...", $fetch<{ message: string }>(`${apiURL}/api/v1/public/register`,
-            { headers: { "authorization": user?.anilistToken }, body: { discordId: user?.discordId }, method: "POST" }))
+            { headers: { "authorization": user.value!.anilistToken! }, body: { discordId: user.value!.discordId! }, method: "POST" }))
     } catch (e) {
         console.error(e);
     }
