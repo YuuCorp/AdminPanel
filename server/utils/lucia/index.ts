@@ -5,11 +5,12 @@ import { Lucia } from "lucia";
 const { discord: discordCfg, anilist: anilistCfg } = useRuntimeConfig()
 
 interface DatabaseUserAttributes {
-	username: string;
-	discordId: string;
-	discordAvatar: string;
+	username?: string;
+	discordId?: string;
+	discordAvatar?: string;
 	anilistId?: number;
 	anilistToken?: string;
+	anilistUsername?: string;
 }
 
 export const lucia = new Lucia(luciaDbAdapter, {
@@ -20,9 +21,10 @@ export const lucia = new Lucia(luciaDbAdapter, {
 		username: attr.username,
 		discordId: attr.discordId,
 		discordAvatar: attr.discordAvatar,
-		
+
 		anilistId: attr.anilistId,
-		anilistToken: attr.anilistToken
+		anilistToken: attr.anilistToken,
+		anilistUsername: attr.anilistUsername,
 	})
 });
 

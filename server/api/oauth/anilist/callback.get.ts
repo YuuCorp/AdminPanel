@@ -13,7 +13,7 @@ export default eventHandler(async (event) => {
       statusCode: 400,
       statusMessage: "Internal server error"
     });
-  }  
+  }
 
   try {
     const token = await anilist.validateAuthorizationCode(code)
@@ -42,21 +42,18 @@ export default eventHandler(async (event) => {
         `
       })
     })
-    if(!anilistRes.data) throw new Error("No anilist data found")
+    if (!anilistRes.data) throw new Error("No anilist data found")
 
-    const { Viewer: { name, id }} = anilistRes.data;
-    
+    const { Viewer: { name, id } } = anilistRes.data;
+
     console.time("Encrypt Token")
     const encryptedToken = await rsaEncryption(token.accessToken);
     console.timeEnd("Encrypt Token")
 
-    const existingUser = await db.query.user.findFirst({ where: (user, { eq }) => eq(user.anilistId, id)});
-    if (!existingUser) {
-      await db.update(userTable)
-      .set({ anilistId: id, anilistToken: encryptedToken, anilistUsername: name})
+    await db.update(userTable)
+      .set({ anilistId: id, anilistToken: encryptedToken, anilistUsername: name })
       .where(eq(userTable.id, user.id))
-    }
-    
+
     return await sendRedirect(event, '/')
   } catch (e) {
     console.error(e)
