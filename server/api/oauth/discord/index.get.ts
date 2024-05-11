@@ -2,8 +2,7 @@ import { generateState } from "arctic";
 
 export default eventHandler(async (event) => {
 	try {
-
-		// return db.delete(userTable);
+		// return await db.delete(userTable);
 		const state = generateState();
 		const url = await discord.createAuthorizationURL(state, {
 			scopes: ["identify"]

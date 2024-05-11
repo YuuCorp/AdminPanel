@@ -22,19 +22,22 @@ export default eventHandler(async (event) => {
 			}
 		});
 
-		const existingUser = await db.query.user.findFirst({
+		const existingUser = await db.query.user?.findFirst({
 			where: (user, { eq }) => eq(user.discordId, discordRes.id)
-		})
+		}) || event.context.user;
+
 		if (existingUser) {
 			await db.update(userTable).set({
 				discordId: discordRes.id,
 				discordAvatar: discordRes.avatar,
 				username: discordRes.username,
-			}).where(eq(userTable.discordId, existingUser.discordId!));
-			if (!event.context.user) {
+			}).where(eq(userTable.id, existingUser.id!));
+
+			if (!event.context.user?.discordId) {
 				const session = await lucia.createSession(existingUser.id, {})
 				appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
 			}
+
 		} else {
 			const userId = generateId(15);
 			await db.insert(userTable).values({

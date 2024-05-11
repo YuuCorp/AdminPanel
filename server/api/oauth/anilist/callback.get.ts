@@ -3,13 +3,12 @@ import { generateId } from "lucia";
 import { eq } from "drizzle-orm";
 
 export default eventHandler(async (event) => {
-  const user = event.context.user;
   const query = getQuery(event);
   const code = query.code?.toString() ?? null;
   const state = query.state?.toString() ?? null;
   const storedState = getCookie(event, "anilist_oauth_state") ?? null;
 
-  if (!code || !state || !storedState || state !== storedState || !user) {
+  if (!code || !state || !storedState || state !== storedState) {
     throw createError({
       statusCode: 400,
       statusMessage: "Internal server error"
@@ -51,14 +50,18 @@ export default eventHandler(async (event) => {
     const encryptedToken = await rsaEncryption(token.accessToken);
     console.timeEnd("Encrypt Token")
 
-    const existingUser = event.context?.user || await db.query.user.findFirst({
+    const existingUser = await db.query.user.findFirst({
       where: (user, { eq }) => eq(user.anilistId, id)
-    })
+    }) || event.context.user;
+
     if (existingUser) {
       await db.update(userTable)
-        .set({ anilistId: id, anilistToken: encryptedToken, anilistUsername: name })
-        .where(eq(userTable.id, user.id))
-      if (!event.context.user) {
+        .set({
+          anilistId: id, anilistToken: encryptedToken, anilistUsername: name,
+        })
+        .where(eq(userTable.id, existingUser.id!))
+
+      if (!event.context.user?.anilistId) {
         const session = await lucia.createSession(existingUser.id, {})
         appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
       }
