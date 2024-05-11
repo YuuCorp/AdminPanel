@@ -30,7 +30,7 @@ export default eventHandler(async (event) => {
 				discordId: discordRes.id,
 				discordAvatar: discordRes.avatar,
 				username: discordRes.username,
-			}).where(eq(userTable.discordId, existingUser.discordId));
+			}).where(eq(userTable.discordId, existingUser.discordId!));
 
 		} else {
 			const userId = generateId(15);
@@ -41,8 +41,10 @@ export default eventHandler(async (event) => {
 				username: discordRes.username,
 			})
 
-			const session = await lucia.createSession(userId, {})
-			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
+			if (!event.context.user) {
+				const session = await lucia.createSession(userId, {})
+				appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
+			}
 		}
 
 

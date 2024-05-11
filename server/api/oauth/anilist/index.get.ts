@@ -3,10 +3,6 @@ import { generateState } from "arctic"
 export default eventHandler(async (event) => {
   const state = generateState()
   const user = event.context.user
-  if (!user) return createError({
-    statusMessage: "User not found",
-    statusCode: 404
-  })
 
   const url = await anilist.createAuthorizationURL(state)
 

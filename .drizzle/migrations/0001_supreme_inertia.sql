@@ -1,0 +1,1 @@
+ALTER TABLE "user" ALTER COLUMN "discord_avatar" DROP NOT NULL;
