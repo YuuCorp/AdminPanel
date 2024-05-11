@@ -1,4 +1,5 @@
 import { OAuth2RequestError } from "arctic";
+import { eq } from "drizzle-orm";
 import { generateId } from "lucia";
 
 export default eventHandler(async (event) => {
@@ -21,28 +22,35 @@ export default eventHandler(async (event) => {
 			}
 		});
 
-		const existingUser = await db.query.user.findFirst({ where: (user, { eq }) => eq(user.discordId, discordRes.id) })
-		console.log("found user");
+		const existingUser = await db.query.user?.findFirst({
+			where: (user, { eq }) => eq(user.discordId, discordRes.id)
+		}) || event.context.user;
+
 		if (existingUser) {
-			if (existingUser.username !== discordRes.username) await db.update(userTable).set({
-				username: discordRes.username
+			await db.update(userTable).set({
+				discordId: discordRes.id,
+				discordAvatar: discordRes.avatar,
+				username: discordRes.username,
+			}).where(eq(userTable.id, existingUser.id!));
+
+			if (!event.context.user?.discordId) {
+				const session = await lucia.createSession(existingUser.id, {})
+				appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
+			}
+
+		} else {
+			const userId = generateId(15);
+			await db.insert(userTable).values({
+				id: userId,
+				discordId: discordRes.id,
+				discordAvatar: discordRes.avatar,
+				username: discordRes.username,
 			})
 
-			const session = await lucia.createSession(existingUser.id, {})
+			const session = await lucia.createSession(userId, {})
 			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
-			return sendRedirect(event, "/")
 		}
 
-		const userId = generateId(15);
-		await db.insert(userTable).values({
-			id: userId,
-			discordId: discordRes.id,
-			discordAvatar: discordRes.avatar,
-			username: discordRes.username
-		})
-
-		const session = await lucia.createSession(userId, {})
-		appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
 
 		return sendRedirect(event, "/");
 	} catch (e) {

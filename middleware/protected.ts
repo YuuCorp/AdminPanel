@@ -1,4 +1,5 @@
 export default defineNuxtRouteMiddleware(async () => {
 	const user = useUser();
-	if (!user.value) return await navigateTo("/api/oauth/discord");
+	
+	if (!user.value) return await navigateTo("/");
 });

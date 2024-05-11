@@ -1,0 +1,24 @@
+import { generateState } from "arctic"
+
+export default eventHandler(async (event) => {
+  try {
+    const state = generateState()
+    const url = await anilist.createAuthorizationURL(state)
+
+    setCookie(event, "anilist_oauth_state", state, {
+      path: "/",
+      secure: !process.dev,
+      httpOnly: true,
+      maxAge: 60 * 10,
+      sameSite: "lax"
+    });
+
+    return sendRedirect(event, url.toString())
+  } catch (error) {
+    console.error(error);
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Failed to create Discord authorization URL."
+    });
+  }
+})

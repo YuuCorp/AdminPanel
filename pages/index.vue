@@ -1,45 +1,108 @@
 <template>
-  <div
-    class="bg-background-200 h-screen w-screen p-2 md:p-8 flex flex-col items-center gap-4 font-jetbrains uppercase text-text-100">
-    <img class="rounded-full h-10 border-2 border-accent absolute top-4 right-4" v-bind:src="userAvatar">
+    <div class="m-auto bg-background-200 h-screen w-screen p-2 md:p-8 flex flex-col items-center gap-4 font-inter">
 
-    <csm-bento class="flex w-full flex-wrap md:flex-nowrap gap-4 justify-center m-auto">
-      <LogView class="w-fit" :logs="APIdata.logs" />
-      <div class="flex flex-col justify-between">
-        <UsageData :logs="APIdata.logs" />
-        <TheAnnouncements :announcements="APIdata.announcements" />
-        <BotStatistics :stats="APIdata.stats" />
-      </div>
-    </csm-bento>
-    <div class="flex flex-wrap w-fit justify-center gap-2 m-auto">
-      <BotButton @click='executeToast("Restarting...", useYuukoAPI("trigger", "restart"))' button-text="Restart Bot"
-        icon="material-symbols:refresh-rounded" />
-      <AnnouncementDialog @submit:announcement='(e) => executeToast("Uploading announcement...", e)' />
-      <BotButton @click='executeToast("Wiping logs...", useYuukoAPI("trigger", "wipe-logs"))' button-text="Wipe Logs"
-        icon="mdi:trash-can-outline" />
+        <div class="flex flex-col gap-4 m-auto w-fit p-4 rounded-lg border h-fit bg-card">
+            <div class="flex text-center flex-col gap-1">
+                <h3 class="font-semibold text-xl">Connect your account to Yuuko!</h3>
+                <h5 class="text-sm text-muted-foreground">Discord and AniList</h5>
+            </div>
+            <csm-divider class="h-[2px] w-full bg-input rounded-full"></csm-divider>
+            <div class="flex flex-col gap-2">
+                <div id="discord" class="flex justify-between items-center">
+                    <button @click="serviceButton('discord', user?.username)"
+                        class="duration-100 h-10 w-20 bg-background rounded-md text-sm font-medium border hover:bg-accent">
+                        {{ discordInfo.buttonText }}
+                    </button>
+                    <div class="flex items-center justify-end gap-1">
+                        <p class="text-sm font-medium">{{ discordInfo.username }}</p>
+                        <Icon name="carbon:logo-discord" size="1rem" />
+                    </div>
+                </div>
+                <div id="anilist" class="flex justify-between items-center">
+                    <button @click="serviceButton('anilist', user?.anilistUsername)"
+                        class="duration-100 h-10 w-20 bg-background rounded-md text-sm font-medium border hover:bg-accent">
+                        {{ anilistInfo.buttonText }}
+                    </button>
+                    <div class="flex items-center justify-end gap-1">
+                        <p class="text-sm font-medium">{{ anilistInfo.username }}</p>
+                        <Icon name="simple-icons:anilist" size="1rem" />
+                    </div>
+                </div>
+            </div>
+            <csm-divider class="h-[2px] w-full bg-input rounded-full"></csm-divider>
+            <div class="flex flex-row-reverse">
+                <button :disabled="!canSubmit" @click="submitUser"
+                    class="duration-100 h-10 w-24 bg-primary rounded-md disabled:opacity-75 disabled:cursor-not-allowed text-sm font-semibold hover:bg-primary/90">
+                    Connect
+                    <Icon name="tabler:send" size="1rem" />
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
-  middleware: ['protected']
+import { eq } from 'drizzle-orm';
+import { toast } from 'vue-sonner'
+const user = useUser();
+
+const anilistInfo = computed(() => {
+    return {
+        buttonText: user.value?.anilistUsername ? "Log out" : "Log in",
+        username: user.value?.anilistUsername ? user.value.anilistUsername : "Not logged in"
+    }
 })
 
-import { toast } from 'vue-sonner'
+const discordInfo = computed(() => {
+    return {
+        buttonText: user.value?.discordId ? "Log out" : "Log in",
+        username: user.value?.discordId ? user.value.username : "Not logged in"
+    }
+})
 
-const user = useAuthenticatedUser()
-const userAvatar = computed(() => `https://cdn.discordapp.com/avatars/${user.value.discordId}/${user.value.discordAvatar}.png`)
-
-const APIdata = await useYuukoAPI("info");
-
+async function serviceButton(service: "discord" | "anilist", checkValue: string | undefined) {
+    const type = checkValue ? "logout" : "login";
+    if (service === "discord") {
+        if (type === "logout") await $fetch("/api/oauth/discord/logout", { method: "POST" });
+        else window.location.href = "/api/oauth/discord";
+    } else {
+        if (type === "logout") await $fetch("/api/oauth/anilist/logout", { method: "POST" });
+        else window.location.href = "/api/oauth/anilist";
+    }
+}
 function executeToast(loading: string, toastPromise: ReturnType<typeof useYuukoAPI<"trigger">>) {
-  return toast.promise(toastPromise, {
-    loading,
-    success: (data) => {
-      return data.message;
-    },
-    error: (data: any) => data.message || "An error occurred",
-  });
+    return toast.promise(toastPromise, {
+        loading,
+        success: (data) => {
+            return data.message;
+        },
+        error: (data: any) => {
+            return data?.data.message || "An error occurred"
+        },
+    });
+}
+
+const canSubmit = computed(() => {
+    return user.value?.discordId && user.value?.anilistUsername && user.value?.anilistToken
+})
+
+async function submitUser() {
+    try {
+        if (!canSubmit.value) return;
+        const config = useRuntimeConfig();
+        const apiURL = config.public.yuukoApiUrl;
+        const promise = $fetch<{ message: string }>(`${apiURL}/api/v1/public/register`,
+            {
+                headers: { "authorization": user.value!.anilistToken! },
+                body: { discordId: user.value!.discordId! }, method: "POST"
+            }).finally(() => {
+                setTimeout(() => {
+                    executeToast("Wiping records...", $fetch("/api/auth/logout", { method: "POST" }));
+                }, 500);
+            });
+        executeToast("Submitting...", promise)
+    } catch (e) {
+        console.error(e);
+    }
 }
 </script>

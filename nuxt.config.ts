@@ -35,6 +35,11 @@ export default defineNuxtConfig({
     db: {
       url: process.env.DB_URL
     },
+    anilist: {
+      clientId: process.env.ANILIST_CLIENT_ID,
+      clientSecret: process.env.ANILIST_CLIENT_SECRET,
+      redirectUri: process.env.ANILIST_REDIRECT_URI
+    },
     discord: {
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
@@ -46,22 +51,23 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "shadcn-nuxt",
     "nuxt-icon",
-    "nuxt-typed-router"
+    "nuxt-typed-router",
+    "@nuxtjs/seo"
   ],
+  site: {
+    url: "https://auth.yuuko.dev",
+    name: "Yuuko Auth",
+    description: "Sign in to AniList via Yuuko to access personalized commands",
+    defaultLocale: "en",
+  },
   shadcn: {
-    /**
-     * Prefix for all the imported component
-     */
     prefix: '',
-    /**
-     * Directory that the component lives in.
-     * @default "./components/ui"
-     */
     componentDir: './components/ui'
   },
   googleFonts: {
     families: {
-      "JetBrains Mono": true
+      "JetBrains Mono": true,
+      "Inter": "400..800",
     }
   }
 })

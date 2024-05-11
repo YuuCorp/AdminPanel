@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1714941112523,
+      "tag": "0000_flimsy_sauron",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1715430913210,
+      "tag": "0001_supreme_inertia",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1715431630812,
+      "tag": "0002_late_inhumans",
+      "breakpoints": true
+    }
+  ]
+}

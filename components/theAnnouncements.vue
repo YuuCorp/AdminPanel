@@ -1,5 +1,6 @@
 <template>
-  <div class="w-80 min-w-80 p-4 h-56 bg-background-100 rounded-lg border border-accent flex flex-col gap-3">
+  <div v-if="announcements.length"
+    class="w-80 min-w-80 p-4 h-56 bg-card rounded-lg border border-accent flex flex-col gap-3">
     <div class="flex w-full justify-between items-center">
       <h1 class="text-lg font-bold">Announcements</h1>
     </div>
@@ -16,7 +17,6 @@
 const props = defineProps<{
   announcements: Announcement[];
 }>()
-
 
 const announcementsIdx = ref(0);
 const currentAnnouncement = computed(() => props.announcements[announcementsIdx.value]);
