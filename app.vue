@@ -12,9 +12,17 @@ const title = computed(() => {
   if (route.name === 'index') return 'Auth'
   return route.name?.toString().toUpperCase()
 })
-useHead({ htmlAttrs: { class: 'dark' } })
+useHead({
+  htmlAttrs: { class: 'dark' },
+  link: [
+    { rel: 'icon', type: 'image/x-icon', href: '/yuuko.ico' }
+  ]
+})
 useSeoMeta({
   title: `Yuuko - ${title.value}`,
-  description: 'The auth page for Yuuko'
+  ogUrl: 'https://auth.yuuko.dev',
+  description: 'Sign in to AniList via Yuuko to access personalized commands',
+  ogTitle: `Yuuko - ${title.value}`,
+  ogDescription: 'Sign in to AniList via Yuuko to access personalized commands',
 })
 </script>

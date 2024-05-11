@@ -15,6 +15,13 @@
       "when": 1715430913210,
       "tag": "0001_supreme_inertia",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1715431630812,
+      "tag": "0002_late_inhumans",
+      "breakpoints": true
     }
   ]
 }
