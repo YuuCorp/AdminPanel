@@ -8,24 +8,24 @@
             </div>
             <csm-divider class="h-[2px] w-full bg-input rounded-full"></csm-divider>
             <div class="flex flex-col gap-2">
-                <div id="discord" class="flex justify-between items-center">
+                <div id="discord" class="flex flex-row-reverse justify-between items-center">
                     <button @click="serviceButton('discord', user?.username)"
                         class="duration-100 h-10 w-20 bg-background rounded-md text-sm font-medium border hover:bg-accent">
                         {{ discordInfo.buttonText }}
                     </button>
                     <div class="flex items-center justify-end gap-1">
-                        <p class="text-sm font-medium">{{ discordInfo.username }}</p>
                         <Icon name="carbon:logo-discord" size="1rem" />
+                        <p class="text-sm font-medium">{{ discordInfo.username }}</p>
                     </div>
                 </div>
-                <div id="anilist" class="flex justify-between items-center">
+                <div id="anilist" class="flex flex-row-reverse justify-between items-center">
                     <button @click="serviceButton('anilist', user?.anilistUsername)"
                         class="duration-100 h-10 w-20 bg-background rounded-md text-sm font-medium border hover:bg-accent">
                         {{ anilistInfo.buttonText }}
                     </button>
                     <div class="flex items-center justify-end gap-1">
-                        <p class="text-sm font-medium">{{ anilistInfo.username }}</p>
                         <Icon name="simple-icons:anilist" size="1rem" />
+                        <p class="text-sm font-medium">{{ anilistInfo.username }}</p>
                     </div>
                 </div>
             </div>
