@@ -1,4 +1,5 @@
 import { OAuth2RequestError } from "arctic";
+import { eq } from "drizzle-orm";
 import { generateId } from "lucia";
 
 export default eventHandler(async (event) => {
@@ -21,13 +22,15 @@ export default eventHandler(async (event) => {
 			}
 		});
 
-		const existingUser = event.context.user;
+		const existingUser = await db.query.user.findFirst({
+			where: (user, { eq }) => eq(user.discordId, discordRes.id)
+		})
 		if (existingUser) {
 			await db.update(userTable).set({
 				discordId: discordRes.id,
 				discordAvatar: discordRes.avatar,
 				username: discordRes.username,
-			})
+			}).where(eq(userTable.discordId, existingUser.discordId));
 
 		} else {
 			const userId = generateId(15);

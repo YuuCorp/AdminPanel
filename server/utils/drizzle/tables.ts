@@ -2,8 +2,8 @@ import { pgTable, text, integer, timestamp } from "drizzle-orm/pg-core";
 
 export const userTable = pgTable('user', {
   id: text("id").primaryKey(),
-  username: text("username").unique(),
-  discordId: text("discord_id").unique(),
+  username: text("username").unique().notNull(),
+  discordId: text("discord_id").unique().notNull(),
   discordAvatar: text("discord_avatar"),
   anilistToken: text("anilist_token"),
   anilistUsername: text("anilist_username"),
