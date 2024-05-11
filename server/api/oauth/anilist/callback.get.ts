@@ -51,12 +51,17 @@ export default eventHandler(async (event) => {
     const encryptedToken = await rsaEncryption(token.accessToken);
     console.timeEnd("Encrypt Token")
 
-    const existingUser = event.context.user;
+    const existingUser = event.context?.user || await db.query.user.findFirst({
+      where: (user, { eq }) => eq(user.anilistId, id)
+    })
     if (existingUser) {
       await db.update(userTable)
         .set({ anilistId: id, anilistToken: encryptedToken, anilistUsername: name })
         .where(eq(userTable.id, user.id))
-
+      if (!event.context.user) {
+        const session = await lucia.createSession(existingUser.id, {})
+        appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
+      }
     } else {
       const userId = generateId(15);
       await db.insert(userTable).values({

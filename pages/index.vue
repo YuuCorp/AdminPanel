@@ -42,6 +42,7 @@
 </template>
 
 <script lang="ts" setup>
+import { eq } from 'drizzle-orm';
 import { toast } from 'vue-sonner'
 const user = useUser();
 
@@ -69,7 +70,6 @@ async function serviceButton(service: "discord" | "anilist", checkValue: string 
         else window.location.href = "/api/oauth/anilist";
     }
 }
-
 function executeToast(loading: string, toastPromise: ReturnType<typeof useYuukoAPI<"trigger">>) {
     return toast.promise(toastPromise, {
         loading,
@@ -91,8 +91,16 @@ async function submitUser() {
         if (!canSubmit.value) return;
         const config = useRuntimeConfig();
         const apiURL = config.public.yuukoApiUrl;
-        executeToast("Submitting...", $fetch<{ message: string }>(`${apiURL}/api/v1/public/register`,
-            { headers: { "authorization": user.value!.anilistToken! }, body: { discordId: user.value!.discordId! }, method: "POST" }))
+        const promise = $fetch<{ message: string }>(`${apiURL}/api/v1/public/register`,
+            {
+                headers: { "authorization": user.value!.anilistToken! },
+                body: { discordId: user.value!.discordId! }, method: "POST"
+            }).finally(() => {
+                setTimeout(() => {
+                    executeToast("Wiping records...", $fetch("/api/auth/logout", { method: "POST" }));
+                }, 500);
+            });
+        executeToast("Submitting...", promise)
     } catch (e) {
         console.error(e);
     }

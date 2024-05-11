@@ -31,7 +31,10 @@ export default eventHandler(async (event) => {
 				discordAvatar: discordRes.avatar,
 				username: discordRes.username,
 			}).where(eq(userTable.discordId, existingUser.discordId!));
-
+			if (!event.context.user) {
+				const session = await lucia.createSession(existingUser.id, {})
+				appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
+			}
 		} else {
 			const userId = generateId(15);
 			await db.insert(userTable).values({
@@ -41,10 +44,8 @@ export default eventHandler(async (event) => {
 				username: discordRes.username,
 			})
 
-			if (!event.context.user) {
-				const session = await lucia.createSession(userId, {})
-				appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
-			}
+			const session = await lucia.createSession(userId, {})
+			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
 		}
 
 
