@@ -24,5 +24,6 @@ useSeoMeta({
   description: 'Sign in to AniList via Yuuko to access personalized commands',
   ogTitle: `Yuuko - ${title.value}`,
   ogDescription: 'Sign in to AniList via Yuuko to access personalized commands',
+  ogImage: "/banner.png"
 })
 </script>

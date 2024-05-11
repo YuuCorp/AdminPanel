@@ -51,8 +51,15 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "shadcn-nuxt",
     "nuxt-icon",
-    "nuxt-typed-router"
+    "nuxt-typed-router",
+    "@nuxtjs/seo"
   ],
+  site: {
+    url: "https://auth.yuuko.dev",
+    name: "Yuuko Auth",
+    description: "Sign in to AniList via Yuuko to access personalized commands",
+    defaultLocale: "en",
+  },
   shadcn: {
     prefix: '',
     componentDir: './components/ui'
