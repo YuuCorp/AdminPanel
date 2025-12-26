@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
+@custom-variant dark (&:is(.dark *));
+
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
@@ -19,7 +21,7 @@
     }
 }
 
-@theme {
+@theme inline {
     --font-jetbrains:
         "JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco",
         "Consolas", "Liberation Mono", "Courier New", "monospace";
@@ -80,52 +82,50 @@
     --animate-collapsible-up: collapsible-up 0.2s ease-in-out;
 }
 
-@layer base {
-    :root {
-        --background: 343 100% 95%;
-        --foreground: 343 5% 4%;
-        --card: 343 50% 90%;
-        --card-foreground: 343 5% 10%;
-        --popover: 343 100% 95%;
-        --popover-foreground: 343 100% 4%;
-        --primary: 343 78.7% 44.1%;
-        --primary-foreground: 0 0% 100%;
-        --secondary: 343 30% 70%;
-        --secondary-foreground: 0 0% 0%;
-        --muted: 305 30% 85%;
-        --muted-foreground: 343 5% 35%;
-        --accent: 305 30% 80%;
-        --accent-foreground: 343 5% 10%;
-        --destructive: 0 100% 30%;
-        --destructive-foreground: 343 5% 90%;
-        --border: 343 30% 50%;
-        --input: 343 30% 18%;
-        --ring: 343 78.7% 44.1%;
-        --radius: 0.5rem;
-    }
+:root {
+    --background: 343 100% 95%;
+    --foreground: 343 5% 4%;
+    --card: 343 50% 90%;
+    --card-foreground: 343 5% 10%;
+    --popover: 343 100% 95%;
+    --popover-foreground: 343 100% 4%;
+    --primary: 343 78.7% 44.1%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 343 30% 70%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 305 30% 85%;
+    --muted-foreground: 343 5% 35%;
+    --accent: 305 30% 80%;
+    --accent-foreground: 343 5% 10%;
+    --destructive: 0 100% 30%;
+    --destructive-foreground: 343 5% 90%;
+    --border: 343 30% 50%;
+    --input: 343 30% 18%;
+    --ring: 343 78.7% 44.1%;
+    --radius: 0.5rem;
+}
 
-    .dark {
-        --background: 343 50% 5%;
-        --foreground: 343 5% 90%;
-        --card: 343 50% 4%;
-        --card-foreground: 343 5% 90%;
-        --popover: 343 50% 5%;
-        --popover-foreground: 343 5% 90%;
-        --primary: 343 78.7% 44.1%;
-        --primary-foreground: 0 0% 100%;
-        --secondary: 343 30% 10%;
-        --secondary-foreground: 0 0% 100%;
-        --muted: 305 30% 15%;
-        --muted-foreground: 343 5% 60%;
-        --accent: 305 30% 15%;
-        --accent-foreground: 343 5% 90%;
-        --destructive: 0 100% 30%;
-        --destructive-foreground: 343 5% 90%;
-        --border: 343 30% 18%;
-        --input: 343 30% 18%;
-        --ring: 343 78.7% 44.1%;
-        --radius: 0.5rem;
-    }
+.dark {
+    --background: 343 50% 5%;
+    --foreground: 343 5% 90%;
+    --card: 343 50% 4%;
+    --card-foreground: 343 5% 90%;
+    --popover: 343 50% 5%;
+    --popover-foreground: 343 5% 90%;
+    --primary: 343 78.7% 44.1%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 343 30% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 305 30% 15%;
+    --muted-foreground: 343 5% 60%;
+    --accent: 305 30% 15%;
+    --accent-foreground: 343 5% 90%;
+    --destructive: 0 100% 30%;
+    --destructive-foreground: 343 5% 90%;
+    --border: 343 30% 18%;
+    --input: 343 30% 18%;
+    --ring: 343 78.7% 44.1%;
+    --radius: 0.5rem;
 }
 
 @layer base {
@@ -134,7 +134,7 @@
     }
 
     body {
-        @apply bg-background text-foreground;
+        @apply bg-background border-border text-foreground;
     }
 
     *::-webkit-scrollbar {

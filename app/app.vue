@@ -2,12 +2,12 @@
     <NuxtLoadingIndicator color="#FFFFFF" />
     <NuxtPage />
 
-    <Sonner expand theme="dark" rich-colors :duration="2500" />
+    <Toaster expand theme="dark" rich-colors :duration="2500" />
 </template>
 
 <script lang="ts" setup>
-import "~/assets/css/tailwind.css";
-import { Sonner } from "@/components/ui/sonner";
+import "vue-sonner/style.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const route = useRoute();
 

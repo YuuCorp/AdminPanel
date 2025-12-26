@@ -77,6 +77,7 @@ export default defineNuxtConfig({
       tailwindcss(),
     ]
   },
+  css: ['~/assets/css/tailwind.css'],
   googleFonts: {
     families: {
       "JetBrains Mono": true,
