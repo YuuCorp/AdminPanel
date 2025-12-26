@@ -22,6 +22,8 @@ export default eventHandler(async (event) => {
 			}
 		});
 
+		// If the Discord ID is not found in database,
+		// assume it to belong to the current user to avoid duplicates.
 		const existingUser = await db.query.user?.findFirst({
 			where: (user, { eq }) => eq(user.discordId, discordRes.id)
 		}) || event.context.user;
@@ -33,7 +35,8 @@ export default eventHandler(async (event) => {
 				username: discordRes.username,
 			}).where(eq(userTable.id, existingUser.id!));
 
-			if (!event.context.user?.discordId) {
+			// If the user does not already have a session, then create one.
+			if (!event.context.session) {
 				const session = await lucia.createSession(existingUser.id, {})
 				appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
 			}
@@ -47,10 +50,11 @@ export default eventHandler(async (event) => {
 				username: discordRes.username,
 			})
 
-			const session = await lucia.createSession(userId, {})
-			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
+			if (!event.context.session) {
+				const session = await lucia.createSession(userId, {})
+				appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
+			}
 		}
-
 
 		return sendRedirect(event, "/");
 	} catch (e) {

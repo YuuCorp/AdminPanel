@@ -16,6 +16,7 @@ export default eventHandler(async (event) => {
 		const user = event.context.user;
 		await db.delete(userTable).where(eq(userTable.id, user.id));
 
+		// Invalidate their Lucia session
 		await lucia.invalidateSession(event.context.session.id);
 		appendHeader(event, "Set-Cookie", lucia.createBlankSessionCookie().serialize());
 

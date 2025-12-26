@@ -9,11 +9,12 @@ export default eventHandler(async (event) => {
       path: "/",
       secure: !process.dev,
       httpOnly: true,
-      maxAge: 60 * 10,
+      maxAge: 60 * 10, // 10 minutes
       sameSite: "lax"
     });
 
     return sendRedirect(event, url.toString())
+
   } catch (error) {
     console.error(error);
     throw createError({

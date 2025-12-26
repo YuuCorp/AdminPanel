@@ -1,81 +1,74 @@
+import type { AniListQueryResponse } from "~/server/utils/types";
 import { rsaEncryption } from "~/composables/rsaEncrypt";
 import { generateId } from "lucia";
 import { eq } from "drizzle-orm";
 
 export default eventHandler(async (event) => {
   const query = getQuery(event);
-  const code = query.code?.toString() ?? null;
-  const state = query.state?.toString() ?? null;
-  const storedState = getCookie(event, "anilist_oauth_state") ?? null;
+
+  const code = query.code?.toString();
+  const state = query.state?.toString();
+  const storedState = getCookie(event, "anilist_oauth_state");
 
   if (!code || !state || !storedState || state !== storedState) {
     throw createError({
-      statusCode: 400,
+      statusCode: 500,
       statusMessage: "Internal server error"
     });
   }
 
   try {
     const token = await anilist.validateAuthorizationCode(code)
-    const anilistRes = await $fetch<{
-      data: {
-        "Viewer": {
-          name: string,
-          id: number
-        }
-      }
-    }>("https://graphql.anilist.co", {
+    const query = `query { Viewer { name id } }`;
+
+    const anilistRes = await $fetch<AniListQueryResponse>("https://graphql.anilist.co", {
       method: "post",
       headers: {
         "Authorization": `Bearer ${token.accessToken}`,
         "Content-Type": "application/json",
         "Accept": "application/json"
       },
-      body: JSON.stringify({
-        query: `
-          query {
-            Viewer {
-              name
-              id
-            }
-          }
-        `
-      })
+      body: JSON.stringify({ query })
     })
+
     if (!anilistRes.data) throw new Error("No anilist data found")
 
-    const { Viewer: { name, id } } = anilistRes.data;
+    const { Viewer: viewer } = anilistRes.data;
 
-    console.time("Encrypt Token")
     const encryptedToken = await rsaEncryption(token.accessToken);
-    console.timeEnd("Encrypt Token")
 
+    // If the AniList viewer ID is not found in database,
+    // assume it to belong to the current user to avoid duplicates.
     const existingUser = await db.query.user.findFirst({
-      where: (user, { eq }) => eq(user.anilistId, id)
+      where: (user, { eq }) => eq(user.anilistId, viewer.id)
     }) || event.context.user;
 
     if (existingUser) {
       await db.update(userTable)
         .set({
-          anilistId: id, anilistToken: encryptedToken, anilistUsername: name,
+          anilistId: viewer.id, anilistToken: encryptedToken, anilistUsername: viewer.name,
         })
         .where(eq(userTable.id, existingUser.id!))
 
-      if (!event.context.user?.anilistId) {
+      // If the user does not already have a session, then create one.
+      if (!event.context.session) {
         const session = await lucia.createSession(existingUser.id, {})
         appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
       }
+
     } else {
       const userId = generateId(15);
       await db.insert(userTable).values({
         id: userId,
-        anilistId: id,
+        anilistId: viewer.id,
         anilistToken: encryptedToken,
-        anilistUsername: name
+        anilistUsername: viewer.name
       })
 
-      const session = await lucia.createSession(userId, {})
-      appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
+      if (!event.context.session) {
+        const session = await lucia.createSession(userId, {})
+        appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
+      }
     }
 
     return await sendRedirect(event, '/')
