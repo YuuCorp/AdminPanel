@@ -1,9 +1,11 @@
 <template>
-    <div class="min-h-screen w-full bg-background font-inter flex flex-col items-center justify-center px-4">
+    <div
+        class="min-h-screen w-full bg-background font-inter flex flex-col items-center justify-center px-4"
+    >
         <!-- Admin link (top right, only for admins) -->
         <div v-if="isAdmin" class="absolute top-4 right-4">
-            <NuxtLink 
-                to="/panel" 
+            <NuxtLink
+                to="/panel"
                 class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-colors"
             >
                 <Icon name="mdi:shield-crown" class="w-4 h-4" />
@@ -15,7 +17,9 @@
         <div class="w-full max-w-sm">
             <div class="rounded-xl border bg-card p-6 shadow-lg">
                 <div class="text-center mb-6">
-                    <h1 class="font-semibold text-xl">Connect to <span class="text-primary">Yuuko</span></h1>
+                    <h1 class="font-semibold text-xl">
+                        Connect to <span class="text-primary">Yuuko</span>
+                    </h1>
                     <p class="text-sm text-muted-foreground mt-1">
                         Link your accounts to unlock personalized commands
                     </p>
@@ -50,35 +54,42 @@
                     size="lg"
                 >
                     <span v-if="canSubmit">Complete Connection</span>
-                    <span v-else class="text-muted-foreground">Connect both accounts to continue</span>
+                    <span v-else class="text-muted-foreground"
+                        >Connect both accounts to continue</span
+                    >
                 </Button>
 
                 <!-- Success state hint -->
-                <p v-if="canSubmit" class="text-xs text-center text-muted-foreground mt-3">
+                <p
+                    v-if="canSubmit"
+                    class="text-xs text-center text-muted-foreground mt-3"
+                >
                     Your accounts will be linked and you can close this page
                 </p>
             </div>
 
             <!-- Footer links -->
-            <div class="flex items-center justify-center gap-4 mt-6 text-xs text-muted-foreground">
-                <a 
-                    href="https://yuuko.dev" 
-                    target="_blank" 
+            <div
+                class="flex items-center justify-center gap-4 mt-6 text-xs text-muted-foreground"
+            >
+                <a
+                    href="https://yuuko.dev"
+                    target="_blank"
                     class="hover:text-foreground transition-colors"
                 >
                     Website
                 </a>
                 <span class="text-muted-foreground/50">·</span>
-                <a 
-                    href="https://discord.gg/DUCEj7vqKD" 
+                <a
+                    href="https://discord.gg/DUCEj7vqKD"
                     target="_blank"
                     class="hover:text-foreground transition-colors"
                 >
                     Discord
                 </a>
                 <span class="text-muted-foreground/50">·</span>
-                <a 
-                    href="https://yuuko.dev/privacy" 
+                <a
+                    href="https://yuuko.dev/privacy"
                     target="_blank"
                     class="hover:text-foreground transition-colors"
                 >
@@ -99,7 +110,9 @@ const isAdmin = ref(false);
 // Check admin status on mount
 onMounted(async () => {
     if (user.value?.discordId) {
-        const { isAdmin: admin } = await $fetch<{ isAdmin: boolean }>("/api/auth/admin");
+        const { isAdmin: admin } = await $fetch<{ isAdmin: boolean }>(
+            "/api/auth/admin"
+        );
         isAdmin.value = admin;
     }
 });
@@ -107,10 +120,12 @@ onMounted(async () => {
 async function refreshUser() {
     const updatedUser = await $fetch<user | null>("/api/auth/me");
     user.value = updatedUser;
-    
+
     // Re-check admin status after user refresh
     if (updatedUser?.discordId) {
-        const { isAdmin: admin } = await $fetch<{ isAdmin: boolean }>("/api/auth/admin");
+        const { isAdmin: admin } = await $fetch<{ isAdmin: boolean }>(
+            "/api/auth/admin"
+        );
         isAdmin.value = admin;
     } else {
         isAdmin.value = false;
@@ -150,14 +165,11 @@ async function submitUser() {
             }
         ).then((d) => {
             setTimeout(() => {
-                toast.promise(
-                    $fetch("/api/auth/logout", { method: "POST" }),
-                    {
-                        loading: "Finishing up...",
-                        success: "All done! You can close this page.",
-                        error: "Something went wrong",
-                    }
-                );
+                toast.promise($fetch("/api/auth/logout", { method: "POST" }), {
+                    loading: "Finishing up...",
+                    success: "All done! You can close this page.",
+                    error: "Something went wrong",
+                });
             }, 500);
 
             return d;
@@ -165,7 +177,7 @@ async function submitUser() {
 
         toast.promise(promise, {
             loading: "Connecting your accounts...",
-            success: (data) => data.message,
+            success: (data: any) => data.message,
             error: (data: any) => data?.data?.message || "An error occurred",
         });
     } catch (e) {

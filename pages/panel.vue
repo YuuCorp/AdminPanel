@@ -70,7 +70,7 @@ function executeToast(
 ) {
     return toast.promise(toastPromise, {
         loading,
-        success: (data) => {
+        success: (data: any) => {
             return data.message;
         },
         error: (data: any) => data.message || "An error occurred",

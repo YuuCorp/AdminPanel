@@ -11,7 +11,7 @@ export default defineEventHandler((event) => {
 		.map(u => u.trim())
 		.filter(Boolean);
 
-	return { 
-		isAdmin: trustedUsers.includes(user.discordId) 
+	return {
+		isAdmin: trustedUsers.includes(user.discordId)
 	};
 });

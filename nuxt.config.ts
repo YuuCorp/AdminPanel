@@ -72,7 +72,7 @@ export default defineNuxtConfig({
   },
   shadcn: {
     prefix: '',
-    componentDir: './components/ui'
+    componentDir: '@/components/ui'
   },
   googleFonts: {
     families: {
