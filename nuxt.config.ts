@@ -3,11 +3,14 @@ const REQUIRED_ENV_VARIABLES = [
   "DISCORD_CLIENT_ID",
   "DISCORD_CLIENT_SECRET",
   "DISCORD_REDIRECT_URI",
-  "YUUKO_API_URL"
+  "YUUKO_API_URL",
+  "TRUSTED_USERS",
 ] as const;
+
 const missingEnvVariables = REQUIRED_ENV_VARIABLES.filter(
   (env) => !process.env[env]
 );
+
 if (missingEnvVariables.length > 0) {
   throw new Error(
     `Missing required environment variables: ${missingEnvVariables.join(", ")}`
@@ -32,8 +35,11 @@ export default defineNuxtConfig({
     public: {
       yuukoApiUrl: process.env.YUUKO_API_URL
     },
+    private: {
+      protectedUsers: process.env.TRUSTED_USERS
+    },
     db: {
-      url: process.env.DB_URL
+      url: process.env.DB_URL,
     },
     anilist: {
       clientId: process.env.ANILIST_CLIENT_ID,
