@@ -1,49 +1,89 @@
 <template>
-    <div
-        class="m-auto bg-background-200 h-screen w-screen p-2 md:p-8 flex flex-col items-center gap-4 font-inter"
-    >
-        <div
-            class="flex flex-col gap-4 m-auto w-fit p-4 rounded-lg border h-fit bg-card"
-        >
-            <div class="flex text-center flex-col gap-1">
-                <h3 class="font-semibold text-xl">
-                    Connect your accounts to Yuuko!
-                </h3>
-                <h5 class="text-sm text-muted-foreground">
-                    Via Discord and AniList
-                </h5>
-            </div>
+    <div class="min-h-screen w-full bg-background font-inter flex flex-col items-center justify-center px-4">
+        <!-- Admin link (top right, only for admins) -->
+        <div v-if="isAdmin" class="absolute top-4 right-4">
+            <NuxtLink 
+                to="/panel" 
+                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-colors"
+            >
+                <Icon name="mdi:shield-crown" class="w-4 h-4" />
+                Admin Panel
+            </NuxtLink>
+        </div>
 
-            <csm-divider
-                class="h-[2px] w-full bg-input rounded-full"
-            ></csm-divider>
+        <!-- Auth Card -->
+        <div class="w-full max-w-sm">
+            <div class="rounded-xl border bg-card p-6 shadow-lg">
+                <div class="text-center mb-6">
+                    <h1 class="font-semibold text-xl">Connect to <span class="text-primary">Yuuko</span></h1>
+                    <p class="text-sm text-muted-foreground mt-1">
+                        Link your accounts to unlock personalized commands
+                    </p>
+                </div>
 
-            <div class="flex flex-col gap-2">
-                <serviceUser
-                    service-type="discord"
-                    :username="user?.username"
-                    @logout="refreshUser"
-                />
-                <serviceUser
-                    service-type="anilist"
-                    :username="user?.anilistUsername"
-                    @logout="refreshUser"
-                />
-            </div>
+                <!-- Steps -->
+                <div class="space-y-3 mb-6">
+                    <AuthStep
+                        :step="1"
+                        service="discord"
+                        label="Discord"
+                        :username="user?.username"
+                        :completed="!!user?.discordId"
+                        @logout="refreshUser"
+                    />
+                    <AuthStep
+                        :step="2"
+                        service="anilist"
+                        label="AniList"
+                        :username="user?.anilistUsername"
+                        :completed="!!user?.anilistUsername"
+                        :disabled="!user?.discordId"
+                        @logout="refreshUser"
+                    />
+                </div>
 
-            <csm-divider
-                class="h-[2px] w-full bg-input rounded-full"
-            ></csm-divider>
-
-            <div class="flex flex-row-reverse">
-                <button
+                <!-- Submit Button -->
+                <Button
                     :disabled="!canSubmit"
                     @click="submitUser"
-                    class="duration-100 h-10 w-24 bg-primary rounded-md disabled:opacity-75 disabled:cursor-not-allowed text-sm font-semibold hover:bg-primary/90"
+                    class="w-full"
+                    size="lg"
                 >
-                    Connect
-                    <Icon name="tabler:send" size="1rem" />
-                </button>
+                    <span v-if="canSubmit">Complete Connection</span>
+                    <span v-else class="text-muted-foreground">Connect both accounts to continue</span>
+                </Button>
+
+                <!-- Success state hint -->
+                <p v-if="canSubmit" class="text-xs text-center text-muted-foreground mt-3">
+                    Your accounts will be linked and you can close this page
+                </p>
+            </div>
+
+            <!-- Footer links -->
+            <div class="flex items-center justify-center gap-4 mt-6 text-xs text-muted-foreground">
+                <a 
+                    href="https://yuuko.dev" 
+                    target="_blank" 
+                    class="hover:text-foreground transition-colors"
+                >
+                    Website
+                </a>
+                <span class="text-muted-foreground/50">·</span>
+                <a 
+                    href="https://discord.gg/DUCEj7vqKD" 
+                    target="_blank"
+                    class="hover:text-foreground transition-colors"
+                >
+                    Discord
+                </a>
+                <span class="text-muted-foreground/50">·</span>
+                <a 
+                    href="https://yuuko.dev/privacy" 
+                    target="_blank"
+                    class="hover:text-foreground transition-colors"
+                >
+                    Privacy
+                </a>
             </div>
         </div>
     </div>
@@ -51,26 +91,30 @@
 
 <script lang="ts" setup>
 import { toast } from "vue-sonner";
+import { Button } from "@/components/ui/button";
+
 const user = useUser();
+const isAdmin = ref(false);
+
+// Check admin status on mount
+onMounted(async () => {
+    if (user.value?.discordId) {
+        const { isAdmin: admin } = await $fetch<{ isAdmin: boolean }>("/api/auth/admin");
+        isAdmin.value = admin;
+    }
+});
 
 async function refreshUser() {
     const updatedUser = await $fetch<user | null>("/api/auth/me");
     user.value = updatedUser;
-}
-
-function executeToast(
-    loading: string,
-    toastPromise: ReturnType<typeof useYuukoAPI<"trigger">>
-) {
-    return toast.promise(toastPromise, {
-        loading,
-        success: (data) => {
-            return data.message;
-        },
-        error: (data: any) => {
-            return data?.data.message || "An error occurred";
-        },
-    });
+    
+    // Re-check admin status after user refresh
+    if (updatedUser?.discordId) {
+        const { isAdmin: admin } = await $fetch<{ isAdmin: boolean }>("/api/auth/admin");
+        isAdmin.value = admin;
+    } else {
+        isAdmin.value = false;
+    }
 }
 
 const canSubmit = computed(() => {
@@ -106,16 +150,24 @@ async function submitUser() {
             }
         ).then((d) => {
             setTimeout(() => {
-                executeToast(
-                    "Wiping records...",
-                    $fetch("/api/auth/logout", { method: "POST" })
+                toast.promise(
+                    $fetch("/api/auth/logout", { method: "POST" }),
+                    {
+                        loading: "Finishing up...",
+                        success: "All done! You can close this page.",
+                        error: "Something went wrong",
+                    }
                 );
             }, 500);
 
             return d;
         });
 
-        executeToast("Connecting...", promise);
+        toast.promise(promise, {
+            loading: "Connecting your accounts...",
+            success: (data) => data.message,
+            error: (data: any) => data?.data?.message || "An error occurred",
+        });
     } catch (e) {
         console.error(e);
     }

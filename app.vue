@@ -6,6 +6,8 @@
 </template>
 
 <script lang="ts" setup>
+import { Sonner } from '@/components/ui/sonner'
+
 const route = useRoute()
 
 const title = computed(() => {

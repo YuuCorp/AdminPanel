@@ -15,10 +15,10 @@ export default eventHandler(async (event) => {
 	}
 
 	try {
-		const tokens = await discord.validateAuthorizationCode(code)
+		const tokens = await discord.validateAuthorizationCode(code, null)
 		const discordRes = await $fetch<DiscordResponse>("https://discord.com/api/users/@me", {
 			headers: {
-				Authorization: `Bearer ${tokens.accessToken}`
+				Authorization: `Bearer ${tokens.accessToken()}`
 			}
 		});
 

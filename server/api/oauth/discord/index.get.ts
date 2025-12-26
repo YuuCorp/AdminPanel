@@ -3,9 +3,7 @@ import { generateState } from "arctic";
 export default eventHandler(async (event) => {
 	try {
 		const state = generateState();
-		const url = await discord.createAuthorizationURL(state, {
-			scopes: ["identify"]
-		});
+		const url = discord.createAuthorizationURL(state, null, ["identify"]);
 
 		setCookie(event, "discord_oauth_state", state, {
 			path: "/",

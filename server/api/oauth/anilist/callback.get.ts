@@ -18,13 +18,14 @@ export default eventHandler(async (event) => {
   }
 
   try {
-    const token = await anilist.validateAuthorizationCode(code)
+    const tokens = await anilist.validateAuthorizationCode(code)
+    const accessToken = tokens.accessToken()
     const query = `query { Viewer { name id } }`;
 
     const anilistRes = await $fetch<AniListQueryResponse>("https://graphql.anilist.co", {
       method: "post",
       headers: {
-        "Authorization": `Bearer ${token.accessToken}`,
+        "Authorization": `Bearer ${accessToken}`,
         "Content-Type": "application/json",
         "Accept": "application/json"
       },
@@ -35,7 +36,7 @@ export default eventHandler(async (event) => {
 
     const { Viewer: viewer } = anilistRes.data;
 
-    const encryptedToken = await rsaEncryption(token.accessToken);
+    const encryptedToken = await rsaEncryption(accessToken);
 
     // If the AniList viewer ID is not found in database,
     // assume it to belong to the current user to avoid duplicates.
