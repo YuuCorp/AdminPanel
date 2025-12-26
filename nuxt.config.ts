@@ -20,14 +20,12 @@ if (missingEnvVariables.length > 0) {
   );
 }
 
+import tailwindcss from '@tailwindcss/vite';
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-12-26',
   devtools: { enabled: true },
-  tailwindcss: {
-    viewer: false,
-    cssPath: ["@/css/tailwind.css", { injectPosition: "first" }],
-  },
   typescript: {
     shim: false
   },
@@ -58,7 +56,6 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    "@nuxtjs/tailwindcss",
     "@nuxtjs/google-fonts",
     "shadcn-nuxt",
     "@nuxt/icon",
@@ -74,6 +71,11 @@ export default defineNuxtConfig({
   shadcn: {
     prefix: '',
     componentDir: '@/components/ui'
+  },
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ]
   },
   googleFonts: {
     families: {

@@ -6,6 +6,7 @@
 </template>
 
 <script lang="ts" setup>
+import "~/assets/css/tailwind.css";
 import { Sonner } from "@/components/ui/sonner";
 
 const route = useRoute();

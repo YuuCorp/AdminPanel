@@ -8,7 +8,7 @@
     >
         <!-- Step indicator -->
         <div 
-            class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium"
+            class="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium"
             :class="completed ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'"
         >
             <Icon v-if="completed" name="mdi:check" class="w-4 h-4" />
@@ -19,7 +19,7 @@
         <div class="flex items-center gap-2 flex-1 min-w-0">
             <Icon 
                 :name="service === 'discord' ? 'carbon:logo-discord' : 'simple-icons:anilist'" 
-                class="w-5 h-5 flex-shrink-0"
+                class="w-5 h-5 shrink-0"
                 :class="completed ? 'text-primary' : 'text-muted-foreground'"
             />
             <div class="min-w-0 flex-1">
@@ -36,7 +36,7 @@
         <button
             @click="handleClick"
             :disabled="disabled"
-            class="flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-md transition-colors disabled:cursor-not-allowed"
+            class="shrink-0 px-3 py-1.5 text-xs font-medium rounded-md transition-colors disabled:cursor-not-allowed"
             :class="[
                 username 
                     ? 'bg-muted hover:bg-muted/80 text-muted-foreground' 
