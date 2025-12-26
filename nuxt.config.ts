@@ -25,7 +25,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-12-26',
   devtools: { enabled: true },
   tailwindcss: {
-    viewer: false
+    viewer: false,
+    cssPath: ["@/css/tailwind.css", { injectPosition: "first" }],
   },
   typescript: {
     shim: false
