@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="APIdata"
-        class="bg-background-200 h-screen w-screen p-2 md:p-8 flex flex-col items-center gap-4 font-jetbrains uppercase text-text-100"
+        class="bg-yu-background-200 h-screen w-screen p-2 md:p-8 flex flex-col items-center gap-4 font-jetbrains uppercase text-text-100"
     >
         <img
             class="rounded-full h-10 border-2 border-accent absolute top-4 right-4"
