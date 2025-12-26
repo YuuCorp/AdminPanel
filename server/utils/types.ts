@@ -1,3 +1,6 @@
+/**
+ * Discord API response to calling the `/api/users/@me` endpoint
+*/
 export type DiscordResponse = {
   id: string
   username: string
@@ -14,3 +17,12 @@ export type DiscordResponse = {
   mfa_enabled: boolean
   locale: string
 }
+
+export type AniListQueryResponse = {
+  data: {
+    "Viewer": {
+      name: string,
+      id: number
+    }
+  }
+};

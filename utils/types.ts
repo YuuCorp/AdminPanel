@@ -5,11 +5,11 @@ export type Log = {
 }
 
 export type Announcement = {
-  id: number
-  date: string
-  createdAt: string
-  updatedAt: string
-  announcement: string
+    id: number
+    date: string
+    createdAt: string
+    updatedAt: string
+    announcement: string
 }
 
 export type BotStats = {
