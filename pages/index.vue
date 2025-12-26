@@ -70,7 +70,6 @@
 </template>
 
 <script lang="ts" setup>
-import { eq } from "drizzle-orm";
 import { toast } from "vue-sonner";
 const user = useUser();
 

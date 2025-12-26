@@ -1,4 +1,4 @@
-type user = {
+export type user = {
 	username?: string;
 	discordId?: string;
 	discordAvatar?: string;
