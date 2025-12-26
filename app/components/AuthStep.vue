@@ -1,15 +1,19 @@
 <template>
-    <div 
-        class="flex items-center gap-3 p-3 rounded-lg border transition-colors"
+    <div
+        class="flex items-center gap-3 p-3 rounded-lg border border-yu-border-200 transition-colors"
         :class="[
-            completed ? 'bg-primary/5 border-primary/20' : 'bg-muted/30',
-            disabled ? 'opacity-50' : ''
+            completed ? 'bg-muted/30 border-primary/20' : 'bg-yu-background-50',
+            disabled ? 'opacity-50' : '',
         ]"
     >
         <!-- Step indicator -->
-        <div 
+        <div
             class="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium"
-            :class="completed ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'"
+            :class="
+                completed
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground'
+            "
         >
             <Icon v-if="completed" name="mdi:check" class="w-4 h-4" />
             <span v-else>{{ step }}</span>
@@ -17,17 +21,21 @@
 
         <!-- Service icon and info -->
         <div class="flex items-center gap-2 flex-1 min-w-0">
-            <Icon 
-                :name="service === 'discord' ? 'carbon:logo-discord' : 'simple-icons:anilist'" 
+            <Icon
+                :name="
+                    service === 'discord'
+                        ? 'carbon:logo-discord'
+                        : 'simple-icons:anilist'
+                "
                 class="w-5 h-5 shrink-0"
                 :class="completed ? 'text-primary' : 'text-muted-foreground'"
             />
             <div class="min-w-0 flex-1">
                 <p class="text-sm font-medium truncate">
-                    {{ username || label }}
+                    {{ label }}
                 </p>
-                <p v-if="!username" class="text-xs text-muted-foreground">
-                    Not connected
+                <p class="text-xs text-muted-foreground">
+                    {{ username ?? "Not connected" }}
                 </p>
             </div>
         </div>
@@ -36,15 +44,15 @@
         <button
             @click="handleClick"
             :disabled="disabled"
-            class="shrink-0 px-3 py-1.5 text-xs font-medium rounded-md transition-colors disabled:cursor-not-allowed"
+            class="shrink-0 px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer disabled:cursor-not-allowed"
             :class="[
-                username 
-                    ? 'bg-muted hover:bg-muted/80 text-muted-foreground' 
+                username
+                    ? 'bg-muted hover:bg-muted/80 text-muted-foreground'
                     : 'bg-primary hover:bg-primary/90 text-primary-foreground',
-                disabled ? 'opacity-50' : ''
+                disabled ? 'opacity-50' : '',
             ]"
         >
-            {{ username ? 'Disconnect' : 'Connect' }}
+            {{ username ? "Disconnect" : "Connect" }}
         </button>
     </div>
 </template>
@@ -61,9 +69,7 @@ const props = defineProps<{
     disabled?: boolean;
 }>();
 
-const emit = defineEmits<{
-    (e: "logout"): void;
-}>();
+const emit = defineEmits<{ (e: "logout"): void }>();
 
 async function handleClick() {
     if (props.disabled) return;

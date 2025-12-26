@@ -1,6 +1,6 @@
 <template>
     <div
-        class="min-h-screen w-full bg-background font-inter flex flex-col items-center justify-center px-4"
+        class="min-h-screen w-full bg-yu-background-200 font-inter flex flex-col items-center justify-center px-4"
     >
         <!-- Admin link (top right, only for admins) -->
         <div v-if="isAdmin" class="absolute top-4 right-4">
@@ -15,7 +15,9 @@
 
         <!-- Auth Card -->
         <div class="w-full max-w-sm">
-            <div class="rounded-xl border bg-card p-6 shadow-lg">
+            <div
+                class="rounded-xl border border-yu-border-100 bg-yu-background-100 p-6 shadow-lg"
+            >
                 <div class="text-center mb-6">
                     <h1 class="font-semibold text-xl">
                         Connect to <span class="text-primary">Yuuko</span>

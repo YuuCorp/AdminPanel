@@ -28,8 +28,13 @@
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
 
-    --color-yu-background-100: #18181a;
-    --color-yu-background-200: #161618;
+    --color-yu-background-50: #080808;
+    --color-yu-background-100: #050505;
+    --color-yu-background-200: #010101;
+
+    --color-yu-border-100: #222222;
+    --color-yu-border-200: #191919;
+
     --color-yu-primary: #ff4d6d;
     --color-yu-accent: #28262b;
 
@@ -126,10 +131,6 @@
 @layer base {
     html {
         @apply font-jetbrains;
-    }
-
-    * {
-        @apply border-border;
     }
 
     body {
