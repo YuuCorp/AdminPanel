@@ -104,13 +104,15 @@ async function submitUser() {
                 body: { token: user.value.anilistToken },
                 method: "POST",
             }
-        ).finally(() => {
+        ).then((d) => {
             setTimeout(() => {
                 executeToast(
                     "Wiping records...",
                     $fetch("/api/auth/logout", { method: "POST" })
                 );
             }, 500);
+
+            return d;
         });
 
         executeToast("Connecting...", promise);

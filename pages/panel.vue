@@ -1,5 +1,6 @@
 <template>
     <div
+        v-if="APIdata"
         class="bg-background-200 h-screen w-screen p-2 md:p-8 flex flex-col items-center gap-4 font-jetbrains uppercase text-text-100"
     >
         <img
@@ -48,20 +49,20 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
-    middleware: ["protected"],
-});
-
 import { toast } from "vue-sonner";
 
-const user = useUser();
+const user = useUser(); // <-- keep the ref
+const APIdata = ref<{
+    logs: globalThis.Log[];
+    announcements: Announcement[];
+    stats: BotStats;
+} | null>(null);
+
 const userAvatar = computed(() => {
     if (user.value)
         return `https://cdn.discordapp.com/avatars/${user.value?.discordId}/${user.value?.discordAvatar}.png`;
     else return "https://cdn.discordapp.com/embed/avatars/0.png";
 });
-
-const APIdata = await useYuukoAPI("info");
 
 function executeToast(
     loading: string,
@@ -75,4 +76,12 @@ function executeToast(
         error: (data: any) => data.message || "An error occurred",
     });
 }
+
+onBeforeMount(async () => {
+    if (!user.value) {
+        user.value = await $fetch<user | null>("/api/auth/me");
+    }
+
+    APIdata.value = await useYuukoAPI("info");
+});
 </script>

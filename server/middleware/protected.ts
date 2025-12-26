@@ -1,7 +1,9 @@
-export default defineNuxtRouteMiddleware(() => {
-	const user = useUser();
+export default defineEventHandler((event) => {
+	if (!event.path.startsWith("/panel")) return;
 
-	if (!user.value) return navigateTo("/");
+	const user = event.context.user;
+
+	if (!user) return navigateTo("/");
 
 	// If the user is unauthenticated or not logged in, lead them back to home page
 	// as you need to be logged in & authenticated to access this page.
@@ -11,7 +13,7 @@ export default defineNuxtRouteMiddleware(() => {
 		.map(u => u.trim())
 		.filter(Boolean);
 
-	const discordId = user.value.discordId;
+	const discordId = user.discordId;
 	if (!discordId || !trustedUsers.includes(discordId)) {
 		throw createError({
 			statusCode: 403,

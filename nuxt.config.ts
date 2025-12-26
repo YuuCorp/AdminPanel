@@ -39,7 +39,7 @@ export default defineNuxtConfig({
       yuukoApiUrl: process.env.YUUKO_API_URL
     },
     private: {
-      protectedUsers: process.env.TRUSTED_USERS
+      protectedUsers: process.env.TRUSTED_USERS || ""
     },
     db: {
       url: process.env.DB_URL,

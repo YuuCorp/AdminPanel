@@ -50,11 +50,8 @@ export default eventHandler(async (event) => {
         })
         .where(eq(userTable.id, existingUser.id!))
 
-      // If the user does not already have a session, then create one.
-      if (!event.context.session) {
-        const session = await lucia.createSession(existingUser.id, {})
-        appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
-      }
+      const session = await lucia.createSession(existingUser.id, {})
+      appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
 
     } else {
       const userId = generateId(15);
@@ -65,10 +62,8 @@ export default eventHandler(async (event) => {
         anilistUsername: viewer.name
       })
 
-      if (!event.context.session) {
-        const session = await lucia.createSession(userId, {})
-        appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
-      }
+      const session = await lucia.createSession(userId, {})
+      appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
     }
 
     return await sendRedirect(event, '/')

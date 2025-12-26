@@ -26,7 +26,7 @@ export default eventHandler(async (event) => {
 		// assume it to belong to the current user to avoid duplicates.
 		const existingUser = await db.query.user?.findFirst({
 			where: (user, { eq }) => eq(user.discordId, discordRes.id)
-		}) || event.context.user;
+		});
 
 		if (existingUser) {
 			await db.update(userTable).set({
@@ -35,11 +35,8 @@ export default eventHandler(async (event) => {
 				username: discordRes.username,
 			}).where(eq(userTable.id, existingUser.id!));
 
-			// If the user does not already have a session, then create one.
-			if (!event.context.session) {
-				const session = await lucia.createSession(existingUser.id, {})
-				appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
-			}
+			const session = await lucia.createSession(existingUser.id, {})
+			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
 
 		} else {
 			const userId = generateId(15);
@@ -50,10 +47,8 @@ export default eventHandler(async (event) => {
 				username: discordRes.username,
 			})
 
-			if (!event.context.session) {
-				const session = await lucia.createSession(userId, {})
-				appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
-			}
+			const session = await lucia.createSession(userId, {})
+			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
 		}
 
 		return sendRedirect(event, "/");
