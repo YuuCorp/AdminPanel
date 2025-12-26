@@ -13,9 +13,11 @@
                     Via Discord and AniList
                 </h5>
             </div>
+
             <csm-divider
                 class="h-[2px] w-full bg-input rounded-full"
             ></csm-divider>
+
             <div class="flex flex-col gap-2">
                 <serviceUser
                     service-type="discord"
@@ -28,9 +30,11 @@
                     @logout="refreshUser"
                 />
             </div>
+
             <csm-divider
                 class="h-[2px] w-full bg-input rounded-full"
             ></csm-divider>
+
             <div class="flex flex-row-reverse">
                 <button
                     :disabled="!canSubmit"
