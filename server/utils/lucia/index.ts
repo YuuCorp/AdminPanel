@@ -17,6 +17,7 @@ export const lucia = new Lucia(luciaDbAdapter, {
 	sessionCookie: {
 		attributes: { secure: !process.dev },
 	},
+
 	getUserAttributes: (attr) => ({
 		username: attr.username,
 		discordId: attr.discordId,

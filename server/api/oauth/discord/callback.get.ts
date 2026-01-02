@@ -15,16 +15,18 @@ export default eventHandler(async (event) => {
 	}
 
 	try {
-		const tokens = await discord.validateAuthorizationCode(code)
+		const tokens = await discord.validateAuthorizationCode(code, null)
 		const discordRes = await $fetch<DiscordResponse>("https://discord.com/api/users/@me", {
 			headers: {
-				Authorization: `Bearer ${tokens.accessToken}`
+				Authorization: `Bearer ${tokens.accessToken()}`
 			}
 		});
 
+		// If the Discord ID is not found in database,
+		// assume it to belong to the current user to avoid duplicates.
 		const existingUser = await db.query.user?.findFirst({
 			where: (user, { eq }) => eq(user.discordId, discordRes.id)
-		}) || event.context.user;
+		});
 
 		if (existingUser) {
 			await db.update(userTable).set({
@@ -33,10 +35,8 @@ export default eventHandler(async (event) => {
 				username: discordRes.username,
 			}).where(eq(userTable.id, existingUser.id!));
 
-			if (!event.context.user?.discordId) {
-				const session = await lucia.createSession(existingUser.id, {})
-				appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
-			}
+			const session = await lucia.createSession(existingUser.id, {})
+			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
 
 		} else {
 			const userId = generateId(15);
@@ -50,7 +50,6 @@ export default eventHandler(async (event) => {
 			const session = await lucia.createSession(userId, {})
 			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
 		}
-
 
 		return sendRedirect(event, "/");
 	} catch (e) {

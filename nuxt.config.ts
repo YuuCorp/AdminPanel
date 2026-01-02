@@ -20,12 +20,12 @@ if (missingEnvVariables.length > 0) {
   );
 }
 
+import tailwindcss from '@tailwindcss/vite';
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: '2025-12-26',
   devtools: { enabled: true },
-  tailwindcss: {
-    viewer: false
-  },
   typescript: {
     shim: false
   },
@@ -39,7 +39,7 @@ export default defineNuxtConfig({
       yuukoApiUrl: process.env.YUUKO_API_URL
     },
     private: {
-      protectedUsers: process.env.TRUSTED_USERS
+      protectedUsers: process.env.TRUSTED_USERS || ""
     },
     db: {
       url: process.env.DB_URL,
@@ -56,10 +56,9 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    "@nuxtjs/tailwindcss",
     "@nuxtjs/google-fonts",
     "shadcn-nuxt",
-    "nuxt-icon",
+    "@nuxt/icon",
     "nuxt-typed-router",
     "@nuxtjs/seo"
   ],
@@ -71,8 +70,14 @@ export default defineNuxtConfig({
   },
   shadcn: {
     prefix: '',
-    componentDir: './components/ui'
+    componentDir: '@/components/ui'
   },
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ]
+  },
+  css: ['~/assets/css/tailwind.css'],
   googleFonts: {
     families: {
       "JetBrains Mono": true,

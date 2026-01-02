@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 export default eventHandler(async (event) => {
   if (!event.context.session) {
     throw createError({
-      statusCode: 403
+      statusCode: 401
     });
   }
 
@@ -14,10 +14,11 @@ export default eventHandler(async (event) => {
       statusMessage: "Tried to logout without being logged in."
     });
   }
+
   const dbUser = await db.query.user.findFirst({ where: (user, { eq }) => eq(user.id, existingUser.id) });
   if (!dbUser) {
     throw createError({
-      statusCode: 400,
+      statusCode: 404,
       statusMessage: "User not found in database."
     });
   }
