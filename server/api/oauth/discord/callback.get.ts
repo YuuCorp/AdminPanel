@@ -1,5 +1,5 @@
 import { OAuth2RequestError } from "arctic";
-import { eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { generateId } from "lucia";
 
 export default eventHandler(async (event) => {
@@ -24,28 +24,42 @@ export default eventHandler(async (event) => {
 
 		// If the Discord ID is not found in database,
 		// assume it to belong to the current user to avoid duplicates.
-		const existingUser = await db.query.user?.findFirst({
+		const providerUser = await db.query.user?.findFirst({
 			where: (user, { eq }) => eq(user.discordId, discordRes.id)
 		});
 
-		if (existingUser) {
-			await db.update(userTable).set({
-				discordId: discordRes.id,
-				discordAvatar: discordRes.avatar,
-				username: discordRes.username,
-			}).where(eq(userTable.id, existingUser.id!));
+		if (event.context.user) {
+			// As we want there to be only one user with the Discord ID connected at a time,
+			// unset it from any rows  that have the current Discord ID.
+			await db.update(userTable)
+				.set({
+					discordId: null,
+					discordAvatar: null,
+					username: null
+				})
+				.where(
+					and(
+						eq(userTable.discordId, discordRes.id),
+						ne(userTable.id, event.context.user.id)
+					)
+				);
 
-			const session = await lucia.createSession(existingUser.id, {})
-			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
-
+			await db.update(userTable)
+				.set({
+					discordId: discordRes.id, discordAvatar: discordRes.avatar, username: discordRes.username,
+				})
+				.where(eq(userTable.id, event.context.user.id!))
 		} else {
-			const userId = generateId(15);
-			await db.insert(userTable).values({
-				id: userId,
-				discordId: discordRes.id,
-				discordAvatar: discordRes.avatar,
-				username: discordRes.username,
-			})
+			const userId = providerUser?.id ?? generateId(15);
+
+			if (!providerUser) {
+				await db.insert(userTable).values({
+					id: userId,
+					discordId: discordRes.id,
+					discordAvatar: discordRes.avatar,
+					username: discordRes.username,
+				})
+			}
 
 			const session = await lucia.createSession(userId, {})
 			appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())

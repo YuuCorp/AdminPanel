@@ -1,7 +1,7 @@
 import type { AniListQueryResponse } from "~/server/utils/types";
 import { rsaEncryption } from "~/composables/rsaEncrypt";
 import { generateId } from "lucia";
-import { eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 
 export default eventHandler(async (event) => {
   const query = getQuery(event);
@@ -40,28 +40,42 @@ export default eventHandler(async (event) => {
 
     // If the AniList viewer ID is not found in database,
     // assume it to belong to the current user to avoid duplicates.
-    const existingUser = await db.query.user.findFirst({
+    const providerUser = await db.query.user?.findFirst({
       where: (user, { eq }) => eq(user.anilistId, viewer.id)
-    }) || event.context.user;
+    });
 
-    if (existingUser) {
+    if (event.context.user) {
+      // As we want there to be only one user with the AniList ID connected at a time,
+      // unset it from any rows  that have the current AniList ID.
+      await db.update(userTable)
+        .set({
+          anilistId: null,
+          anilistToken: null,
+          anilistUsername: null
+        })
+        .where(
+          and(
+            eq(userTable.anilistId, viewer.id),
+            ne(userTable.id, event.context.user.id)
+          )
+        );
+
       await db.update(userTable)
         .set({
           anilistId: viewer.id, anilistToken: encryptedToken, anilistUsername: viewer.name,
         })
-        .where(eq(userTable.id, existingUser.id!))
-
-      const session = await lucia.createSession(existingUser.id, {})
-      appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
-
+        .where(eq(userTable.id, event.context.user.id!))
     } else {
-      const userId = generateId(15);
-      await db.insert(userTable).values({
-        id: userId,
-        anilistId: viewer.id,
-        anilistToken: encryptedToken,
-        anilistUsername: viewer.name
-      })
+      const userId = providerUser?.id ?? generateId(15);
+
+      if (!providerUser) {
+        await db.insert(userTable).values({
+          id: userId,
+          anilistId: viewer.id,
+          anilistToken: encryptedToken,
+          anilistUsername: viewer.name
+        })
+      }
 
       const session = await lucia.createSession(userId, {})
       appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
