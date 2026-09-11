@@ -1,19 +1,26 @@
 import createClient from "openapi-fetch";
 import type { paths } from "~/types/yuuko-api";
 
-export const api = createClient<paths>({
-  baseUrl: process.env.YUUKO_API_URL || "http://localhost:3030",
-});
+const clients = new Map<string, ReturnType<typeof createClient<paths>>>();
 
-api.use({
-  onRequest({ request }) {
-    const user = unref(useUser());
-    if (user?.discordId) {
-      request.headers.set("Authorization", user.discordId);
-    }
-    return request;
-  },
-});
+function getApiClient(baseUrl: string) {
+  if (clients.has(baseUrl)) return clients.get(baseUrl)!;
+
+  const client = createClient<paths>({ baseUrl });
+
+  client.use({
+    onRequest({ request }) {
+      const user = unref(useUser());
+      if (user?.discordId) {
+        request.headers.set("Authorization", user.discordId);
+      }
+      return request;
+    },
+  });
+
+  clients.set(baseUrl, client);
+  return client;
+}
 
 type ExtractContent<T> = T extends { content: { "application/json": infer J } }
   ? J
@@ -49,6 +56,9 @@ export async function useYuukoAPI<P extends keyof paths>(
   path: P,
   body?: BodyFor<P>
 ): Promise<ResponseFor<P>> {
+  const config = useRuntimeConfig();
+  const api = getApiClient(config.public.yuukoApiUrl);
+
   const user = unref(useUser());
   if (!user) throw new Error("User not logged in");
 
