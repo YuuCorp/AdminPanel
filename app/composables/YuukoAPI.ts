@@ -1,32 +1,73 @@
-type API_name = "info" | "trigger";
+import createClient from "openapi-fetch";
+import type { paths } from "~/types/yuuko-api";
 
-type API_type<T> =
-  T extends "info" ? { logs: Log[], announcements: Announcement[], stats: BotStats } :
-  T extends "trigger" ? { message: string } :
-  never;
+export const api = createClient<paths>({
+  baseUrl: process.env.YUUKO_API_URL || "http://localhost:3030",
+});
 
-export async function useYuukoAPI<T extends API_name>(type: T): Promise<API_type<T>>
-export async function useYuukoAPI<T extends API_name>(type: T, api_path: string): Promise<API_type<T>>;
-export async function useYuukoAPI<T extends API_name>(type: T, api_path: string, body: any): Promise<API_type<T>>;
-export async function useYuukoAPI<T extends API_name>(type: T, api_path?: string, body?: any): Promise<API_type<T>> {
-  const config = useRuntimeConfig();
-  const apiURL = config.public.yuukoApiUrl;
+api.use({
+  onRequest({ request }) {
+    const user = unref(useUser());
+    if (user?.discordId) {
+      request.headers.set("Authorization", user.discordId);
+    }
+    return request;
+  },
+});
+
+type ExtractContent<T> = T extends { content: { "application/json": infer J } }
+  ? J
+  : T extends { content: { "text/plain": infer Txt } }
+  ? Txt
+  : never;
+
+type ExtractSuccess<Op> = Op extends { responses: infer R }
+  ? {
+    [K in keyof R]: K extends 200 | 201 | 202 | "200" | "201" | "202"
+    ? ExtractContent<R[K]>
+    : never;
+  }[keyof R]
+  : never;
+
+type ResponseFor<P extends keyof paths> = paths[P] extends { post: infer Op }
+  ? ExtractSuccess<Op>
+  : paths[P] extends { get: infer Op }
+  ? ExtractSuccess<Op>
+  : never;
+
+type BodyFor<P extends keyof paths> = paths[P] extends {
+  post: { requestBody: { content: { "application/json": infer B } } };
+}
+  ? B
+  : paths[P] extends {
+    post: { requestBody?: { content: { "application/json": infer B } } };
+  }
+  ? B
+  : undefined;
+
+export async function useYuukoAPI<P extends keyof paths>(
+  path: P,
+  body?: BodyFor<P>
+): Promise<ResponseFor<P>> {
   const user = unref(useUser());
   if (!user) throw new Error("User not logged in");
-  const userHeader = { "Authorization": user.discordId };
-  if (type === "info") {
-    if (api_path && body) {
-      return $fetch<{ message: string }>(`${apiURL}/api/v1/info/create-announcement`, {
-        method: "POST", headers: userHeader, body
-      }) as Promise<API_type<T>>;
-    } else {
-      const logs = await $fetch<Log[]>(`${apiURL}/api/v1/info/logs`, { headers: userHeader })
-      const announcements = await $fetch<Announcement[]>(`${apiURL}/api/v1/info/announcements`, { headers: userHeader })
-      const stats = await $fetch<BotStats>(`${apiURL}/api/v1/info/stats`, { headers: userHeader })
-      return { logs, announcements, stats } as API_type<T>;
-    }
-  } else {
-    const url = `${apiURL}/api/v1/trigger/${api_path}`;
-    return $fetch<{ message: string }>(url, { method: "POST", headers: userHeader }) as Promise<API_type<T>>;
-  }
+
+  const options = {
+    body,
+    params: {
+      header: {
+        authorization: user.discordId,
+      },
+    },
+  } as any;
+
+  const isPost =
+    body !== undefined || path.includes("/trigger/") || path.includes("/register");
+
+  const { data, error } = isPost
+    ? await api.POST(path as any, options)
+    : await api.GET(path as any, options);
+
+  if (error) throw error;
+  return data as ResponseFor<P>;
 }

@@ -40,17 +40,18 @@ const emits = defineEmits<{
 
 const announcementData = defineModel<string | number>({ default: "" });
 const remainingChars = computed(
-    () => 200 - String(announcementData.value).length
+    () => 200 - String(announcementData.value).length,
 );
 
 function submitAnnouncement() {
     emits(
         "submit:announcement",
-        useYuukoAPI("info", "announcement", {
+        useYuukoAPI("/api/v1/trigger/create-announcement", {
             announcement: String(announcementData.value),
             date: new Date().toISOString(),
-        })
+        }),
     );
+
     announcementData.value = "";
 }
 </script>

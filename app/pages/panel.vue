@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="APIdata"
-        class="bg-yu-background-200 h-screen w-screen p-2 md:p-8 flex flex-col items-center gap-4 font-jetbrains uppercase text-text-100"
+        class="bg-yu-background-200 h-screen w-screen p-2 md:p-8 flex flex-col items-center gap-4 font-jetbrains text-text-100"
     >
         <img
             class="rounded-full h-10 border-2 border-accent absolute top-4 right-4"
@@ -23,7 +23,7 @@
                 @click="
                     executeToast(
                         'Restarting...',
-                        useYuukoAPI('trigger', 'restart')
+                        useYuukoAPI('/api/v1/trigger/restart', {}),
                     )
                 "
                 button-text="Restart Bot"
@@ -38,7 +38,7 @@
                 @click="
                     executeToast(
                         'Wiping logs...',
-                        useYuukoAPI('trigger', 'wipe-logs')
+                        useYuukoAPI('/api/v1/trigger/wipe-logs', {}),
                     )
                 "
                 button-text="Wipe Logs"
@@ -50,12 +50,13 @@
 
 <script lang="ts" setup>
 import { toast } from "vue-sonner";
+import type { AnnouncementsData, BotStatsData, LogsData } from "~/utils/types";
 
 const user = useUser(); // <-- keep the ref
 const APIdata = ref<{
-    logs: globalThis.Log[];
-    announcements: Announcement[];
-    stats: BotStats;
+    stats: BotStatsData;
+    announcements: AnnouncementsData;
+    logs: LogsData;
 } | null>(null);
 
 const userAvatar = computed(() => {
@@ -64,9 +65,9 @@ const userAvatar = computed(() => {
     else return "https://cdn.discordapp.com/embed/avatars/0.png";
 });
 
-function executeToast(
+function executeToast<T extends { message?: string }>(
     loading: string,
-    toastPromise: ReturnType<typeof useYuukoAPI<"trigger">>
+    toastPromise: Promise<T>,
 ) {
     return toast.promise(toastPromise, {
         loading,
@@ -82,6 +83,12 @@ onBeforeMount(async () => {
         user.value = await $fetch<user | null>("/api/auth/me");
     }
 
-    APIdata.value = await useYuukoAPI("info");
+    const [stats, announcements, logs] = await Promise.all([
+        useYuukoAPI("/api/v1/info/stats"),
+        useYuukoAPI("/api/v1/info/announcements"),
+        useYuukoAPI("/api/v1/info/logs"),
+    ]);
+
+    APIdata.value = { stats, announcements, logs };
 });
 </script>

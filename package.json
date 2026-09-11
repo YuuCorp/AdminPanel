@@ -11,7 +11,8 @@
     "db:generate": "drizzle-kit generate:pg",
     "db:push": "drizzle-kit push:pg",
     "db:introspect": "drizzle-kit introspect:pg",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "generate:api": "openapi-typescript http://localhost:3030/openapi/json -o ./app/types/yuuko-api.d.ts"
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.0.7",
@@ -23,6 +24,7 @@
     "drizzle-orm": "^0.45.1",
     "lucia": "^3.1.1",
     "lucide-vue-next": "^0.562.0",
+    "openapi-fetch": "^0.17.0",
     "oslo": "^1.2.0",
     "pg": "^8.16.3",
     "radix-vue": "^1.9.17",
@@ -45,6 +47,7 @@
     "drizzle-kit": "^0.31.8",
     "nuxt": "^4.2.2",
     "nuxt-typed-router": "^4.0.2",
+    "openapi-typescript": "^7.13.0",
     "shadcn-nuxt": "^2.4.3",
     "typescript": "^5.9.3"
   }

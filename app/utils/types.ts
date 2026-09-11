@@ -1,22 +1,10 @@
-export type Log = {
-    date: string
-    user: string
-    info: string
-}
-
-export type Announcement = {
-    id: number
-    date: string
-    createdAt: string
-    updatedAt: string
-    announcement: string
-}
-
-export type BotStats = {
-    registered: number
-    members: number
-    servers: number
-}
+export type BotStatsData = Awaited<
+    ReturnType<typeof useYuukoAPI<"/api/v1/info/stats">>
+>;
+export type AnnouncementsData = Awaited<
+    ReturnType<typeof useYuukoAPI<"/api/v1/info/announcements">>
+>;
+export type LogsData = Awaited<ReturnType<typeof useYuukoAPI<"/api/v1/info/logs">>>;
 
 export type githubStats = {
     commits: number;

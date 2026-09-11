@@ -24,13 +24,15 @@
 </template>
 
 <script lang="ts" setup>
+import type { AnnouncementsData } from "~/utils/types";
+
 const props = defineProps<{
-    announcements: Announcement[];
+    announcements: AnnouncementsData;
 }>();
 
 const announcementsIdx = ref(0);
 const currentAnnouncement = computed(
-    () => props.announcements[announcementsIdx.value]
+    () => props.announcements[announcementsIdx.value],
 );
 
 onNuxtReady(() => {
@@ -38,7 +40,7 @@ onNuxtReady(() => {
         announcementsIdx.value = limitRange(
             0,
             props.announcements.length - 1,
-            announcementsIdx.value + 1
+            announcementsIdx.value + 1,
         );
     }, 3000);
 });

@@ -35,7 +35,9 @@
 </template>
 
 <script lang="ts" setup>
+import type { BotStatsData } from "~/utils/types";
+
 defineProps<{
-    stats: BotStats;
+    stats: BotStatsData;
 }>();
 </script>
