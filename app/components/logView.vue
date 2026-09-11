@@ -94,7 +94,9 @@
                         {{ log.meta.type }}
                     </span>
 
-                    <p class="text-text-100 truncate grow text-xs font-normal">
+                    <p
+                        class="text-text-100 text-xs font-normal whitespace-nowrap overflow-x-scroll grow shrink"
+                    >
                         {{ log.message }}
                     </p>
 
@@ -171,12 +173,16 @@ const formatTimestamp = (ts?: string) => {
     if (!ts) return "--:--:--";
 
     const date = new Date(ts);
-    return date.toLocaleTimeString([], {
+
+    const compactDate = `${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`;
+    const time = date.toLocaleTimeString([], {
         hour12: false,
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
     });
+
+    return `${compactDate} ${time}`;
 };
 
 const filteredLogs = computed(() => {
